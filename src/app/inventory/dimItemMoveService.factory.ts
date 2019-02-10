@@ -6,41 +6,54 @@ import { DimItem } from './item-types';
 import { dimItemService } from './dimItemService.factory';
 import { t } from 'app/i18next-t';
 import { loadingTracker } from '../shell/loading-tracker';
-import { showNotification } from '../notifications/notifications';
+import { DimError } from '../bungie-api/bungie-service-helper';
+import { showNotification } from 'app/notifications/notifications';
 import { hideItemPopup } from 'app/item-popup/item-popup';
+
+function handleMoveError(item: DimItem, store: DimStore, e: DimError) {
+  showNotification({ type: 'error', title: item.name, body: e.message });
+  console.error('error moving item', item.name, 'to', store.name, e);
+  // Some errors aren't worth reporting
+  if (
+    e.code !== 'wrong-level' &&
+    e.code !== 'no-space' &&
+    e.code !== 1671 /* PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation */
+  ) {
+    reportException('moveItem', e);
+  }
+}
+
+async function move(item: DimItem, store: DimStore, equip: boolean, amount: number) {
+  const reload = item.equipped || equip;
+  hideItemPopup();
+  try {
+    item = await dimItemService.moveTo(item, store, equip, amount);
+
+    if (reload) {
+      // Refresh light levels and such
+      await item.getStoresService().updateCharacters();
+    }
+
+    item.updateManualMoveTimestamp();
+  } catch (e) {
+    if (equip) {
+      // Try again just moving, rather than equipping
+      await move(item, store, false, amount);
+      showNotification({
+        type: 'warn',
+        title: item.name,
+        body: t('ItemMove.CantEquip', { error: e.message })
+      });
+    } else {
+      handleMoveError(item, store, e);
+    }
+  }
+}
 
 /**
  * Move the item to the specified store. Equip it if equip is true.
  */
-export const moveItemTo = queuedAction(
-  loadingTracker.trackPromise(
-    async (item: DimItem, store: DimStore, equip: boolean, amount: number) => {
-      hideItemPopup();
-      const reload = item.equipped || equip;
-      try {
-        item = await dimItemService.moveTo(item, store, equip, amount);
-
-        if (reload) {
-          // Refresh light levels and such
-          await item.getStoresService().updateCharacters();
-        }
-
-        item.updateManualMoveTimestamp();
-      } catch (e) {
-        showNotification({ type: 'error', title: item.name, body: e.message });
-        console.error('error moving item', item.name, 'to', store.name, e);
-        // Some errors aren't worth reporting
-        if (
-          e.code !== 'wrong-level' &&
-          e.code !== 'no-space' &&
-          e.code !== 1671 /* PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation */
-        ) {
-          reportException('moveItem', e);
-        }
-      }
-    }
-  )
-);
+export const moveItemTo = queuedAction(loadingTracker.trackPromise(move));
 
 /**
  * Consolidate all copies of a stackable item into a single stack in store.

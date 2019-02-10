@@ -378,7 +378,8 @@
     "Consolidate": "Consolidated {{name}}",
     "Distributed": "Distributed {{name}}\n {{name}} is now equally divided between characters.",
     "ToStore": "All {{name}} are now on your {{store}}.",
-    "ToVault": "All {{name}} are now in your vault."
+    "ToVault": "All {{name}} are now in your vault.",
+    "CantEquip": "This item could not be equipped, but was moved to the correct character.\n\n{{error}}"
   },
   "ItemPicker": {
     "ChooseItem": "Choose an item:",
