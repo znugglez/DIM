@@ -5,12 +5,16 @@ interface CssExports {
   'ammoIcon': string;
   'arcIcon': string;
   'element': string;
+  'extraStuff': string;
   'heavyAmmo': string;
   'itemHeader': string;
   'itemTitle': string;
+  'masterwork': string;
   'powerElement': string;
   'powerInfo': string;
   'primaryAmmo': string;
+  'primaryStatName': string;
+  'requiredLevel': string;
   'solarIcon': string;
   'specialAmmo': string;
   'subSection': string;
