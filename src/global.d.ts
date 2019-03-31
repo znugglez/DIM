@@ -33,6 +33,8 @@ declare const $featureFlags: {
   respectDNT: boolean;
   /** Community-curated rolls (wish lists) */
   curatedRolls: boolean;
+  // New item popup
+  newItemPopup: boolean;
 };
 
 /* tslint:disable */

@@ -15,6 +15,8 @@ import './ItemPopupContainer.scss';
 import ItemTagHotkeys from './ItemTagHotkeys';
 import GlobalHotkeys from '../hotkeys/GlobalHotkeys';
 import { t } from 'app/i18next-t';
+import NewItemPopupHeader from './NewItemPopupHeader';
+import NewItemPopupBody from './NewItemPopupBody';
 
 interface ProvidedProps {
   boundarySelector?: string;
@@ -120,7 +122,13 @@ class ItemPopupContainer extends React.Component<Props, State> {
       return null;
     }
 
-    const header = (
+    const header = $featureFlags.newItemPopup ? (
+      <NewItemPopupHeader
+        item={item}
+        expanded={itemDetails}
+        onToggleExpanded={this.toggleItemDetails}
+      />
+    ) : (
       <ItemPopupHeader
         item={item}
         expanded={itemDetails}
@@ -128,7 +136,16 @@ class ItemPopupContainer extends React.Component<Props, State> {
       />
     );
 
-    const body = (
+    const body = $featureFlags.newItemPopup ? (
+      <NewItemPopupBody
+        item={item}
+        extraInfo={extraInfo}
+        tab={tab}
+        expanded={itemDetails}
+        onTabChanged={this.onTabChanged}
+        onToggleExpanded={this.toggleItemDetails}
+      />
+    ) : (
       <ItemPopupBody
         item={item}
         extraInfo={extraInfo}
