@@ -18,6 +18,8 @@ import { t } from 'app/i18next-t';
 import NewItemPopupHeader from './NewItemPopupHeader';
 import NewItemPopupBody from './NewItemPopupBody';
 import NewItemActions from './NewItemActions';
+import { DimStore } from '../inventory/store-types';
+import { storesSelector } from '../inventory/reducer';
 
 interface ProvidedProps {
   boundarySelector?: string;
@@ -26,12 +28,14 @@ interface ProvidedProps {
 interface StoreProps {
   isPhonePortrait: boolean;
   itemDetails: boolean;
+  stores: DimStore[];
 }
 
 function mapStateToProps(state: RootState): StoreProps {
   return {
     isPhonePortrait: state.shell.isPhonePortrait,
-    itemDetails: state.settings.itemDetails
+    itemDetails: state.settings.itemDetails,
+    stores: storesSelector(state)
   };
 }
 
@@ -116,7 +120,7 @@ class ItemPopupContainer extends React.Component<Props, State> {
   }
 
   render() {
-    const { isPhonePortrait, itemDetails } = this.props;
+    const { isPhonePortrait, itemDetails, stores } = this.props;
     const { item, extraInfo = {}, tab } = this.state;
 
     if (!item) {
@@ -124,11 +128,7 @@ class ItemPopupContainer extends React.Component<Props, State> {
     }
 
     const header = $featureFlags.newItemPopup ? (
-      <NewItemPopupHeader
-        item={item}
-        expanded={itemDetails}
-        onToggleExpanded={this.toggleItemDetails}
-      />
+      <NewItemPopupHeader item={item} />
     ) : (
       <ItemPopupHeader
         item={item}
@@ -141,11 +141,10 @@ class ItemPopupContainer extends React.Component<Props, State> {
       <NewItemPopupBody
         item={item}
         extraInfo={extraInfo}
+        stores={stores}
         tab={tab}
         isPhonePortrait={isPhonePortrait}
-        expanded={itemDetails}
         onTabChanged={this.onTabChanged}
-        onToggleExpanded={this.toggleItemDetails}
       />
     ) : (
       <ItemPopupBody
