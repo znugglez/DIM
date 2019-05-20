@@ -108,7 +108,7 @@ class ItemReviews extends React.Component<Props, State> {
     // TODO: show the total number of thumbs up and down?
 
     return (
-      <div>
+      <div className="user-reviews">
         <div className="user-review--header">
           {dtrRating && dtrRating.votes && (
             <div className="user-review--vote-summary">

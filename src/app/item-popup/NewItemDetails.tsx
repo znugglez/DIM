@@ -3,7 +3,7 @@ import { DimItem } from '../inventory/item-types';
 import NotesForm from './NotesForm';
 import ExternalLink from '../dim-ui/ExternalLink';
 import ishtarLogo from '../../images/ishtar-collective.svg';
-import { t } from 'i18next';
+import { t } from 'app/i18next-t';
 import BungieImage from '../dim-ui/BungieImage';
 import { settings } from '../settings/settings';
 import ItemSockets from './ItemSockets';
@@ -17,16 +17,15 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { DimStore } from '../inventory/store-types';
 import ItemSubDetails from './ItemSubDetails';
 
-// TODO: probably need to load manifest. We can take a lot of properties off the item if we just load the definition here.
-export default function NewItemDetails({
-  item,
-  stores,
-  extraInfo = {}
-}: {
+interface Props {
   item: DimItem;
   stores: DimStore[];
+  forwardedRef?: React.Ref<HTMLDivElement>;
   extraInfo?: ItemPopupExtraInfo;
-}) {
+}
+
+// TODO: probably need to load manifest. We can take a lot of properties off the item if we just load the definition here.
+function NewItemDetails({ item, stores, forwardedRef, extraInfo = {} }: Props) {
   const showDescription = Boolean(item.description && item.description.length);
 
   const loreLink = item.loreHash
@@ -34,7 +33,7 @@ export default function NewItemDetails({
     : undefined;
 
   return (
-    <div>
+    <div className="item-details-body" ref={forwardedRef}>
       <ItemSubDetails item={item} stores={stores} />
       {item.taggable && <NotesForm item={item} />}
 
@@ -158,3 +157,7 @@ export default function NewItemDetails({
     </div>
   );
 }
+
+export default React.forwardRef<HTMLDivElement, Props>((props, ref) => (
+  <NewItemDetails forwardedRef={ref} {...props} />
+));

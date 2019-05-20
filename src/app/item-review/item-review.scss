@@ -2,6 +2,12 @@
   font-size: 2em;
 }
 
+.user-reviews {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .user-review {
   &--header {
     display: flex;
@@ -71,8 +77,8 @@
   }
 
   &--reviews {
-    max-height: 350px;
     overflow: auto;
+    flex: 1;
   }
 
   &--details {

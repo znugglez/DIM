@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DimItem } from '../inventory/item-types';
-import { t } from 'i18next';
+import { t } from 'app/i18next-t';
 import ItemDetails from './ItemDetails';
 import { ItemPopupExtraInfo } from './item-popup';
 import classNames from 'classnames';
@@ -67,6 +67,10 @@ export default function NewItemPopupBody({
 
   const onRest = () => onTabChanged(tab);
 
+  const [height, setHeight] = useState(0);
+  const measureHeightRef = (element: HTMLDivElement | null) =>
+    element && setHeight(element.clientHeight);
+
   return (
     <div>
       {/* TODO: Should these be in the details? Or in the header? */}
@@ -83,40 +87,51 @@ export default function NewItemPopupBody({
       )}
 
       <div className="move-popup-details">
-        {tabs.length > 1 ? (
-          <>
-            <div className="move-popup-tabs">
-              {tabs.map((ta) => (
-                <span
-                  key={ta.tab}
-                  className={classNames('move-popup-tab', {
-                    selected: tab === ta.tab
-                  })}
-                  onClick={() => onTabChanged(ta.tab)}
-                >
-                  {ta.title}
-                </span>
-              ))}
-            </div>
-            <ViewPager>
-              <Frame className="frame" autoSize="height">
-                <Track
-                  currentView={tab.toString()}
-                  contain={false}
-                  className="track"
-                  onViewChange={onViewChange}
-                  onRest={onRest}
-                >
-                  {tabs.map((ta) => (
-                    <View key={ta.tab.toString()}>{ta.component}</View>
-                  ))}
-                </Track>
-              </Frame>
-            </ViewPager>
-          </>
-        ) : (
-          tabs[0].component
+        {height === 0 && (
+          <NewItemDetails
+            item={item}
+            extraInfo={extraInfo}
+            stores={stores}
+            ref={measureHeightRef}
+          />
         )}
+        {height > 0 &&
+          (tabs.length > 1 ? (
+            <>
+              <div className="move-popup-tabs">
+                {tabs.map((ta) => (
+                  <span
+                    key={ta.tab}
+                    className={classNames('move-popup-tab', {
+                      selected: tab === ta.tab
+                    })}
+                    onClick={() => onTabChanged(ta.tab)}
+                  >
+                    {ta.title}
+                  </span>
+                ))}
+              </div>
+              <ViewPager>
+                <Frame className="frame">
+                  <Track
+                    currentView={tab.toString()}
+                    contain={false}
+                    className="track"
+                    onViewChange={onViewChange}
+                    onRest={onRest}
+                  >
+                    {tabs.map((ta) => (
+                      <View key={ta.tab.toString()}>
+                        <div style={{ height }}>{ta.component}</div>
+                      </View>
+                    ))}
+                  </Track>
+                </Frame>
+              </ViewPager>
+            </>
+          ) : (
+            tabs[0].component
+          ))}
       </div>
     </div>
   );

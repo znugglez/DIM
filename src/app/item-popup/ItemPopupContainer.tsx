@@ -163,6 +163,7 @@ class ItemPopupContainer extends React.Component<Props, State> {
       </Sheet>
     ) : (
       <div
+        key={item.index}
         className={`move-popup-dialog is-${item.tier} ${
           $featureFlags.newItemPopup ? 'new-popup' : ''
         }`}

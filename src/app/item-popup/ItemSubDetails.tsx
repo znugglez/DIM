@@ -1,5 +1,5 @@
 import React from 'react';
-import { t } from 'i18next';
+import { t } from 'app/i18next-t';
 import styles from './ItemSubDetails.m.scss';
 import { DestinyAmmunitionType } from 'bungie-api-ts/destiny2';
 import { DimItem } from '../inventory/item-types';
