@@ -70,6 +70,7 @@ class NewItemActions extends React.Component<Props, State> {
     // TODO: compare, lock/unlock, links?
     // TODO: equip set, gather dupes, add to loadout
     // TODO: lock, track, rating, tag
+    // TODO: banshee link
 
     return (
       <>

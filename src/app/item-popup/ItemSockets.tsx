@@ -78,6 +78,9 @@ class ItemSockets extends React.Component<Props> {
       item.hash
     );
 
+    // TODO: remove help tips for best rated
+    // TODO: use a different icon for community rated
+
     return (
       <div className={classNames('item-details', 'sockets', { chalice })}>
         {item.sockets.categories.map(

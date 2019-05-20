@@ -24,6 +24,8 @@ interface Props {
 
 // TODO: probably need to load manifest. We can take a lot of properties off the item if we just load the definition here.
 function NewItemDetails({ item, stores, forwardedRef, extraInfo = {} }: Props) {
+  /* TODO: show source info via collections */
+
   return (
     <div className="item-details-body" ref={forwardedRef}>
       <ItemSubDetails item={item} stores={stores} />

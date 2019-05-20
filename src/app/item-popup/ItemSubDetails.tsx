@@ -36,6 +36,8 @@ export default function ItemSubDetails({ item, stores }: { item: DimItem; stores
   const showRequiredLevel =
     item.equipRequiredLevel > 0 && stores.some((s) => s.level < item.equipRequiredLevel);
 
+  // TODO: show whether the item is curated
+
   return (
     <div className={styles.subSection}>
       {showRequiredLevel && (
