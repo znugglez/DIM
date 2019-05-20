@@ -5,7 +5,7 @@ import ExternalLink from '../dim-ui/ExternalLink';
 import { settings } from '../settings/settings';
 import styles from './NewItemPopupHeader.m.scss';
 import { DestinyClass } from 'bungie-api-ts/destiny2';
-import { AppIcon, lockIcon } from '../shell/icons';
+import LockButton from './LockButton';
 
 export default function NewItemPopupHeader({ item }: { item: DimItem }) {
   // TODO: lock, track, rating, tag
@@ -34,10 +34,11 @@ export default function NewItemPopupHeader({ item }: { item: DimItem }) {
             {item.typeName}
           </div>
           {/* TODO: use localized tier */}
-          <div>
+          <div className={styles.tierLock}>
             <span>{item.tier}</span>
             {/* TODO: this is too close to the close button */}
-            {item.locked && <AppIcon icon={lockIcon} />}
+            {item.lockable && <LockButton item={item} type="lock" />}
+            {item.isDestiny1() && item.trackable && <LockButton item={item} type="track" />}
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ interface CssExports {
   'itemTitle': string;
   'masterwork': string;
   'subTitle': string;
+  'tierLock': string;
   'titleContainer': string;
 }
 declare var cssExports: CssExports;

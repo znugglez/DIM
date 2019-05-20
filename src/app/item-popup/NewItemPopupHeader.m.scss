@@ -94,3 +94,7 @@
 .itemHeader {
   overflow: hidden;
 }
+
+.tierLock {
+  composes: flexRow from '../dim-ui/common.m.scss';
+}

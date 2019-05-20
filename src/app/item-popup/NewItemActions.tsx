@@ -17,6 +17,7 @@ import styles from './NewItemActions.m.scss';
 import { AppIcon } from '../shell/icons';
 import { faClone } from '@fortawesome/free-regular-svg-icons';
 import { CompareService } from '../compare/compare.service';
+import ItemTagSelector from './ItemTagSelector';
 
 interface ProvidedProps {
   item: DimItem;
@@ -68,6 +69,7 @@ class NewItemActions extends React.Component<Props, State> {
 
     // TODO: compare, lock/unlock, links?
     // TODO: equip set, gather dupes, add to loadout
+    // TODO: lock, track, rating, tag
 
     return (
       <>
@@ -80,6 +82,8 @@ class NewItemActions extends React.Component<Props, State> {
           />
         )}
         <div className={styles.actions}>
+          {/* TODO: Replace with a button-based tagger! */}
+          {item.taggable && <ItemTagSelector item={item} />}
           {stores.map((buttonStore) => (
             <NewItemMoveLocation
               key={buttonStore.id}
@@ -130,6 +134,18 @@ class NewItemActions extends React.Component<Props, State> {
                 >
                   <AppIcon icon={faClone} />
                   <span>{t('Compare.ButtonHelp')}</span>
+                </div>
+              </div>
+            )}
+            {item.lockable && (
+              <div className="buttons">
+                <div
+                  className="move-button"
+                  title={t('Compare.ButtonHelp')}
+                  onClick={this.openCompare}
+                >
+                  <AppIcon icon={faClone} />
+                  <span>Lock</span>
                 </div>
               </div>
             )}

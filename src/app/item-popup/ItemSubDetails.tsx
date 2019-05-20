@@ -59,6 +59,7 @@ export default function ItemSubDetails({ item, stores }: { item: DimItem; stores
             <div>{t('ItemService.PercentComplete', { percent: item.percentComplete })}</div>
           )}
 
+          {/* TODO: show the tag */}
           {item.taggable && <ItemTagSelector item={item} />}
 
           {item.reviewable && <ExpandedRating item={item} />}
