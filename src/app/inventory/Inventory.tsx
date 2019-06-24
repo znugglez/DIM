@@ -17,6 +17,7 @@ import D1Farming from '../farming/D1Farming';
 import InfusionFinder from '../infuse/InfusionFinder';
 import { queueAction } from './action-queue';
 import { StJudeToaster } from 'app/stJude/StJudeToaster';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 const mobile = /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
 
@@ -40,6 +41,14 @@ class Inventory extends React.Component<Props> {
 
   constructor(props) {
     super(props);
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result) {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
   }
 
   componentDidMount() {
@@ -71,14 +80,16 @@ class Inventory extends React.Component<Props> {
 
     return (
       <>
-        <Stores />
-        {!mobile && <StJudeToaster />}
-        <LoadoutDrawer />
-        <Compare />
-        <StackableDragHelp />
-        {account.destinyVersion === 1 ? <D1Farming /> : <D2Farming />}
-        <InfusionFinder destinyVersion={account.destinyVersion} />
-        <ClearNewItems account={account} />
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Stores />
+          {!mobile && <StJudeToaster />}
+          <LoadoutDrawer />
+          <Compare />
+          <StackableDragHelp />
+          {account.destinyVersion === 1 ? <D1Farming /> : <D2Farming />}
+          <InfusionFinder destinyVersion={account.destinyVersion} />
+          <ClearNewItems account={account} />
+        </DragDropContext>
       </>
     );
   }

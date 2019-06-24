@@ -14,6 +14,7 @@ import ClickOutside from '../dim-ui/ClickOutside';
 import ReactDOM from 'react-dom';
 import { AppIcon, powerActionIcon, openDropdownIcon } from '../shell/icons';
 import { percent } from '../shell/filters';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 interface Props {
   store: DimStore;
@@ -31,6 +32,50 @@ interface State {
 
 function isVault(store: DimStore): store is DimVault {
   return store.isVault;
+}
+
+export function PacDmg() {
+  return (
+    <Droppable droppableId="droppable">
+      {(provided) => (
+        <div style={{ position: 'absolute' }} {...provided.droppableProps} ref={provided.innerRef}>
+          <Draggable draggableId="draggable-1" index={0}>
+            {(provided, snapshot) => {
+              let style = {};
+
+              if (snapshot.isDragging) {
+                style = {
+                  position: 'relative',
+                  cursor: 'none',
+                  width: '98px',
+                  height: '98px',
+                  top: '-32px',
+                  left: '-32px'
+                };
+              }
+
+              return (
+                <div style={{ position: 'absolute', left: '250px' }}>
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    {/*
+          // @ts-ignore */}
+                    <div className="pac-dmg" style={style}>
+                      &nbsp;
+                    </div>
+                  </div>
+                </div>
+              );
+            }}
+          </Draggable>
+          {provided.placeholder}
+        </div>
+      )}
+    </Droppable>
+  );
 }
 
 export default class StoreHeading extends React.Component<Props, State> {
@@ -66,57 +111,61 @@ export default class StoreHeading extends React.Component<Props, State> {
 
     if (isVault(store)) {
       return (
-        <div className="character">
-          <div
-            className="character-box vault"
-            ref={this.menuTrigger}
-            onClick={this.openLoadoutPopup}
-          >
-            {background}
-            <div className="details">
-              {emblem}
-              <div className="character-text">
-                <div className="top">
-                  <div className="class">{store.className}</div>
-                </div>
-                <div className="bottom">
-                  <div className="currency">
-                    <img src={glimmer} />
-                    {store.glimmer}
+        <>
+          <div className="character">
+            <div
+              className="character-box vault"
+              ref={this.menuTrigger}
+              onClick={this.openLoadoutPopup}
+            >
+              {background}
+              <div className="details">
+                {emblem}
+                <div className="character-text">
+                  <div className="top">
+                    <div className="class">{store.className}</div>
                   </div>
-                  <div className="currency legendaryMarks">
-                    <img src={store.isDestiny1() ? legendaryMarks : legendaryShards} />
-                    {store.legendaryMarks}{' '}
+                  <div className="bottom">
+                    <div className="currency">
+                      <img src={glimmer} />
+                      {store.glimmer}
+                    </div>
+                    <div className="currency legendaryMarks">
+                      <img src={store.isDestiny1() ? legendaryMarks : legendaryShards} />
+                      {store.legendaryMarks}{' '}
+                    </div>
                   </div>
                 </div>
+                {loadoutButton}
               </div>
-              {loadoutButton}
+            </div>
+            {loadoutMenu}
+            <div className="vault-capacity">
+              {Object.keys(store.vaultCounts).map((bucketId) => (
+                <PressTip
+                  key={bucketId}
+                  tooltip={<VaultToolTip counts={store.vaultCounts[bucketId]} />}
+                >
+                  <div
+                    key={bucketId}
+                    className={classNames('vault-bucket', {
+                      'vault-bucket-full':
+                        store.vaultCounts[bucketId].count ===
+                        store.vaultCounts[bucketId].bucket.capacity
+                    })}
+                  >
+                    <div className="vault-bucket-tag">
+                      {store.vaultCounts[bucketId].bucket.name.substring(0, 1)}
+                    </div>
+                    {store.vaultCounts[bucketId].count}/
+                    {store.vaultCounts[bucketId].bucket.capacity}
+                  </div>
+                </PressTip>
+              ))}
             </div>
           </div>
-          {loadoutMenu}
-          <div className="vault-capacity">
-            {Object.keys(store.vaultCounts).map((bucketId) => (
-              <PressTip
-                key={bucketId}
-                tooltip={<VaultToolTip counts={store.vaultCounts[bucketId]} />}
-              >
-                <div
-                  key={bucketId}
-                  className={classNames('vault-bucket', {
-                    'vault-bucket-full':
-                      store.vaultCounts[bucketId].count ===
-                      store.vaultCounts[bucketId].bucket.capacity
-                  })}
-                >
-                  <div className="vault-bucket-tag">
-                    {store.vaultCounts[bucketId].bucket.name.substring(0, 1)}
-                  </div>
-                  {store.vaultCounts[bucketId].count}/{store.vaultCounts[bucketId].bucket.capacity}
-                </div>
-              </PressTip>
-            ))}
-          </div>
-        </div>
+          <PacDmg />
+        </>
       );
     }
 

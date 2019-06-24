@@ -10,6 +10,12 @@ import { AppIcon, lockIcon, thumbsUpIcon, stickyNoteIcon } from '../shell/icons'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { InventoryCuratedRoll } from '../curated-rolls/curatedRollService';
 import RatingIcon from './RatingIcon';
+import WHITE from '../../images/WHITE.png';
+import BLUE from '../../images/BLUE.png';
+import GREEN from '../../images/GREEN.png';
+import PURPLE from '../../images/PURPLE.png';
+import YELLOW from '../../images/YELLOW.png';
+import { Droppable } from 'react-beautiful-dnd';
 
 const tagIcons: { [tag: string]: IconDefinition | undefined } = {};
 itemTags.forEach((tag) => {
@@ -69,49 +75,88 @@ export default class InventoryItem extends React.Component<Props> {
 
     const treatAsCurated = Boolean(curationEnabled && inventoryCuratedRoll);
 
+    const bread = {
+      Legendary: PURPLE,
+      Rare: BLUE,
+      Uncommon: GREEN,
+      Common: WHITE,
+      Exotic: YELLOW
+    }[item.tier];
+    let trigger = false;
+
     return (
-      <div
-        id={item.index}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-        title={`${item.name}\n${item.typeName}`}
-        className={classNames('item', itemImageStyles)}
-      >
-        {item.percentComplete > 0 && !item.complete && (
-          <div className="item-xp-bar">
-            <div className="item-xp-bar-amount" style={{ width: percent(item.percentComplete) }} />
-          </div>
-        )}
-        <div style={bungieBackgroundStyle(item.icon)} className="item-img" />
-        {badgeInfo.showBadge && (
-          <div className={classNames(badgeInfo.badgeClassNames)}>
-            {item.isDestiny1() && item.quality && (
-              <div className="item-quality" style={getColor(item.quality.min, 'backgroundColor')}>
-                {item.quality.min}%
+      <Droppable droppableId={'droppable' + item.id}>
+        {(provided, snapshot) => {
+          if (snapshot.isDraggingOver && !trigger) {
+            trigger = true;
+          }
+
+          return (
+            <>
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <div
+                  id={item.index}
+                  onClick={onClick}
+                  onDoubleClick={onDoubleClick}
+                  title={`${item.name}\n${item.typeName}`}
+                  className={classNames('item', itemImageStyles)}
+                >
+                  {item.percentComplete > 0 && !item.complete && (
+                    <div className="item-xp-bar">
+                      <div
+                        className="item-xp-bar-amount"
+                        style={{ width: percent(item.percentComplete) }}
+                      />
+                    </div>
+                  )}
+                  <div
+                    style={
+                      trigger
+                        ? bungieBackgroundStyle(item.icon)
+                        : { backgroundImage: `url(${bread})` }
+                    }
+                    className="item-img"
+                  />
+                  {badgeInfo.showBadge && (
+                    <div className={classNames(badgeInfo.badgeClassNames)}>
+                      {item.isDestiny1() && item.quality && (
+                        <div
+                          className="item-quality"
+                          style={getColor(item.quality.min, 'backgroundColor')}
+                        >
+                          {item.quality.min}%
+                        </div>
+                      )}
+                      {rating !== undefined && !hideRating && (
+                        <div className="item-review">
+                          <RatingIcon rating={rating} />
+                        </div>
+                      )}
+                      <div className="primary-stat">
+                        {item.dmg && <ElementIcon element={item.dmg} />}
+                        {badgeInfo.badgeCount}
+                      </div>
+                    </div>
+                  )}
+                  {item.masterwork && <div className="overlay" />}
+                  {(tag || item.locked || treatAsCurated || notes) && (
+                    <div className="icons">
+                      {item.locked && <AppIcon className="item-tag" icon={lockIcon} />}
+                      {tag && tagIcons[tag] && (
+                        <AppIcon className="item-tag" icon={tagIcons[tag]!} />
+                      )}
+                      {treatAsCurated && <AppIcon className="item-tag" icon={thumbsUpIcon} />}
+                      {notes && <AppIcon className="item-tag" icon={stickyNoteIcon} />}
+                    </div>
+                  )}
+                  {isNew && <div className="new-item" />}
+                </div>
               </div>
-            )}
-            {rating !== undefined && !hideRating && (
-              <div className="item-review">
-                <RatingIcon rating={rating} />
-              </div>
-            )}
-            <div className="primary-stat">
-              {item.dmg && <ElementIcon element={item.dmg} />}
-              {badgeInfo.badgeCount}
-            </div>
-          </div>
-        )}
-        {item.masterwork && <div className="overlay" />}
-        {(tag || item.locked || treatAsCurated || notes) && (
-          <div className="icons">
-            {item.locked && <AppIcon className="item-tag" icon={lockIcon} />}
-            {tag && tagIcons[tag] && <AppIcon className="item-tag" icon={tagIcons[tag]!} />}
-            {treatAsCurated && <AppIcon className="item-tag" icon={thumbsUpIcon} />}
-            {notes && <AppIcon className="item-tag" icon={stickyNoteIcon} />}
-          </div>
-        )}
-        {isNew && <div className="new-item" />}
-      </div>
+              {provided.placeholder}
+            </>
+          );
+        }}
+      </Droppable>
     );
   }
 }

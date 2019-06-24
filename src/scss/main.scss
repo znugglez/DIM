@@ -5,3 +5,15 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 @import 'forms';
 @import 'style';
+
+.pac-dmg {
+  width: 48px;
+  height: 48px;
+  background: url(https://files.slack.com/files-pri/T0417CH7T-FKTLYE3EC/pac-dmg.gif);
+  z-index: 1000;
+  background-size: contain;
+}
+
+.store-header .store-cell {
+  position: relative;
+}
