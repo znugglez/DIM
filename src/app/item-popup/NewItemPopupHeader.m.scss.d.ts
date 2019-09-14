@@ -8,5 +8,5 @@ interface CssExports {
   'tierLock': string;
   'titleContainer': string;
 }
-declare var cssExports: CssExports;
+declare const cssExports: CssExports;
 export = cssExports;

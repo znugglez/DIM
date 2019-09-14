@@ -17,5 +17,5 @@ interface CssExports {
   'subSection': string;
   'voidIcon': string;
 }
-declare var cssExports: CssExports;
+declare const cssExports: CssExports;
 export = cssExports;

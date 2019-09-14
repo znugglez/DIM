@@ -121,11 +121,15 @@ class ItemPopupContainer extends React.Component<Props, State> {
 
   render() {
     const { isPhonePortrait, itemDetails, stores } = this.props;
-    const { item, extraInfo = {}, tab } = this.state;
+    const { extraInfo = {}, tab } = this.state;
+    let { item } = this.state;
 
     if (!item) {
       return null;
     }
+
+    // Try to find an updated version of the item!
+    item = maybeFindItem(item, stores);
 
     const header = $featureFlags.newItemPopup ? (
       <NewItemPopupHeader item={item} />
@@ -252,3 +256,26 @@ export default connect<StoreProps, DispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(ItemPopupContainer);
+
+/**
+ * The passed in item may be old - look through stores to try and find a newer version!
+ * This helps with items that have objectives, like Pursuits.
+ *
+ * TODO: This doesn't work for the synthetic items created for Milestones.
+ */
+function maybeFindItem(item: DimItem, stores: DimStore[]) {
+  // Don't worry about non-instanced items
+  if (item.id === '0') {
+    return item;
+  }
+
+  for (const store of stores) {
+    for (const storeItem of store.items) {
+      if (storeItem.id === item.id) {
+        return storeItem;
+      }
+    }
+  }
+  // Didn't find it, use what we've got.
+  return item;
+}
