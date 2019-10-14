@@ -1,4 +1,4 @@
-import { getPlatforms, setActivePlatform } from './platforms';
+import { setActivePlatform } from './platforms';
 import { Transition } from '@uirouter/react';
 import store from 'app/store/store';
 import { accountsSelector } from './reducer';
@@ -11,7 +11,6 @@ export function destinyAccountResolver(destinyVersion: 1 | 2) {
   return async ($transition$: Transition) => {
     const { membershipId } = $transition$.params();
 
-    await getPlatforms();
     // TODO: getPlatformMatching should be able to load an account that we don't know
     const account = accountsSelector(store.getState()).find(
       (account) =>

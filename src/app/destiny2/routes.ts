@@ -8,7 +8,8 @@ export const states: ReactStateDeclaration[] = [
   {
     name: 'destiny2',
     redirectTo: 'destiny2.inventory',
-    url: '/:membershipId/d2',
+    url: '/d2',
+    parent: 'bungieAccount',
     component: Destiny,
     resolve: [
       {
