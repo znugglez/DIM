@@ -1,41 +1,18 @@
-import {
-  DamageType,
-  DestinyEnergyType,
-  DestinyInventoryItemDefinition,
-} from 'bungie-api-ts/destiny2';
+import { DestinyInventoryItemDefinition } from 'bungie-api-ts/destiny2';
 import { DimItem, DimSocket } from 'app/inventory/item-types';
 
 import modMetadataBySlotTag from 'data/d2/specialty-modslot-metadata.json';
 import powerCapToSeason from 'data/d2/lightcap-to-season.json';
 import { objectifyArray } from './util';
+import {
+  energyNamesByEnum,
+  damageNamesByEnum,
+  Armor2ModPlugCategories,
+} from 'app/search/d2-known-values';
 
 // damage is a mess!
 // this section supports turning a destiny DamageType or EnergyType into a known english name
 // mainly for most css purposes and the filter names
-export const damageNamesByEnum: { [key in DamageType]: string | null } = {
-  0: null,
-  1: 'kinetic',
-  2: 'arc',
-  3: 'solar',
-  4: 'void',
-  5: 'raid',
-};
-
-export const energyNamesByEnum: { [key in DestinyEnergyType]: string } = {
-  [DestinyEnergyType.Any]: 'any',
-  [DestinyEnergyType.Arc]: 'arc',
-  [DestinyEnergyType.Thermal]: 'solar',
-  [DestinyEnergyType.Void]: 'void',
-};
-
-export const Armor2ModPlugCategories = {
-  general: 2487827355,
-  helmet: 2912171003,
-  gauntlets: 3422420680,
-  chest: 1526202480,
-  leg: 2111701510,
-  classitem: 912441879,
-} as const;
 
 export const getItemDamageShortName = (item: DimItem): string | undefined =>
   item.isDestiny2() && item.energy

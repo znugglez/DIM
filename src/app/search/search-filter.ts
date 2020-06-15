@@ -52,6 +52,7 @@ import { settingsSelector } from 'app/settings/reducer';
 import store from '../store/store';
 import { getStore } from 'app/inventory/stores-helpers';
 import { DestinyVersion } from '@destinyitemmanager/dim-api-types';
+import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
 
 /**
  * (to the tune of TMNT) ♪ string processing helper functions ♫
@@ -68,7 +69,7 @@ const isLatinBased = () =>
 export const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /** Make a Regexp that searches starting at a word boundary */
-const startWordRegexp = memoizeOne(
+export const startWordRegexp = memoizeOne(
   (s: string) =>
     // Only some languages effectively use the \b regex word boundary
     new RegExp(`${isLatinBased() ? '\\b' : ''}${escapeRegExp(s)}`, 'i')
@@ -98,13 +99,41 @@ const mathCheck = /^[\d<>=]/;
 /** replaces a word with a corresponding season i.e. turns `<=forge` into `<=5`.
  * use only on simple filter values where there's not other letters */
 const replaceSeasonTagWithNumber = (s: string) => s.replace(/[a-z]+$/i, (tag) => seasonTags[tag]);
-// so, duplicate detection has gotten complicated in season 8. same items can have different hashes.
+// so, duplicate detection has gotten complicated in season 8. same items can have different hashes.D2Values.
 // we use enough values to ensure this item is intended to be the same, as the index for looking up dupes
 
 /** outputs a string combination of the identifying features of an item, or the hash if classified */
 export const makeDupeID = (item: DimItem) =>
   (item.classified && String(item.hash)) ||
   `${item.name}${item.classType}${item.tier}${item.itemCategoryHashes.join('.')}`;
+
+export type FilterDefinition = {
+  keywords: string; // i18n key
+  hint: string; // i18n key
+  description: string; // i18n key
+  format: 'freeform' | 'range' | 'attribute';
+  destiny1: boolean;
+  destiny2: boolean;
+  breadcrumb?: (filterValue?: string) => JSX.Element;
+  contextGenerator?: (allItems: DimItem[]) => void;
+  suggestionsGenerator?: (defs: D2ManifestDefinitions) => string[];
+} & (
+  | {
+      filterValuePreprocessor?: (filterValue: string) => string;
+      filterFunction: (item: DimItem, filterValue?: string) => boolean | null | undefined;
+    }
+  | {
+      filterValuePreprocessor: (filterValue: string) => RegExp;
+      filterFunction: (item: DimItem, filterValue: RegExp) => boolean | null | undefined;
+    }
+  | {
+      filterValuePreprocessor: (filterValue: string) => (a: number) => boolean;
+      filterFunction: (
+        item: DimItem,
+        filterValue: (a: number) => boolean
+      ) => boolean | null | undefined;
+    }
+);
 
 /**
  * Selectors
@@ -154,8 +183,8 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
 
   // Add new ItemCategoryHash hashes to this, to add new category searches
   const categoryHashFilters: { [key: string]: number } = {
-    ...hashes.D1CategoryHashes,
-    ...(isD2 ? hashes.D2CategoryHashes : {}),
+    ...hashes.D1Values.D1ItemCategoryHashes,
+    ...(isD2 ? hashes.D2Values.D2ItemCategoryHashes : {}),
   };
 
   const stats = [
@@ -354,7 +383,9 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
     // a keyword for every combination of a DIM-processed stat and mathmatical operator
     ...ranges.flatMap((range) => operators.map((comparison) => `${range}:${comparison}`)),
     // energy capacity elements and ranges
-    ...(isD2 ? hashes.energyCapacityTypes.map((element) => `energycapacity:${element}`) : []),
+    ...(isD2
+      ? hashes.D2Values.energyCapacityTypeNames.map((element) => `energycapacity:${element}`)
+      : []),
     ...(isD2 ? operators.map((comparison) => `energycapacity:${comparison}`) : []),
     // keywords for checking when an item hits power limit. s11 is the first valid season for this
     ...(isD2
@@ -679,8 +710,6 @@ function searchFilters(
             case 'level':
             case 'rating':
             case 'ratingcount':
-            case 'id':
-            case 'hash':
             case 'source':
             case 'modslot':
             case 'holdsmod':
@@ -729,12 +758,6 @@ function searchFilters(
      * @return Returns true for a match, false for a non-match
      */
     filters: {
-      id(item: DimItem, filterValue: string) {
-        return item.id === filterValue;
-      },
-      hash(item: DimItem, filterValue: string) {
-        return item.hash.toString() === filterValue;
-      },
       dmg(item: DimItem, filterValue: string) {
         return getItemDamageShortName(item) === filterValue;
       },
@@ -751,8 +774,8 @@ function searchFilters(
         };
         return item.tier.toLowerCase() === (tierMap[filterValue] || filterValue);
       },
-      sublime(item: DimItem) {
-        return hashes.sublimeEngrams.includes(item.hash);
+      sublime(item: D1Item) {
+        return hashes.D1Values.sublimeEngrams.includes(item.hash);
       },
       // Incomplete will show items that are not fully leveled.
       incomplete(item: DimItem) {
@@ -964,11 +987,14 @@ function searchFilters(
       glimmer(item: DimItem, filterValue: string) {
         switch (filterValue) {
           case 'glimmerboost':
-            return hashes.boosts.includes(item.hash);
+            return hashes.D1Values.boosts.includes(item.hash);
           case 'glimmersupply':
-            return hashes.supplies.includes(item.hash);
+            return hashes.D1Values.supplies.includes(item.hash);
           case 'glimmeritem':
-            return hashes.boosts.includes(item.hash) || hashes.supplies.includes(item.hash);
+            return (
+              hashes.D1Values.boosts.includes(item.hash) ||
+              hashes.D1Values.supplies.includes(item.hash)
+            );
         }
         return false;
       },
@@ -1024,47 +1050,7 @@ function searchFilters(
       description(item: DimItem, filterValue: string) {
         return item.description.toLowerCase().includes(filterValue);
       },
-      perk(item: DimItem, filterValue: string) {
-        const regex = startWordRegexp(filterValue);
-        return (
-          item.talentGrid?.nodes.some(
-            (node) => regex.test(node.name) || regex.test(node.description)
-          ) ||
-          (item.isDestiny2() &&
-            item.sockets &&
-            item.sockets.sockets.some((socket) =>
-              socket.plugOptions.some(
-                (plug) =>
-                  regex.test(plug.plugItem.displayProperties.name) ||
-                  regex.test(plug.plugItem.displayProperties.description) ||
-                  plug.perks.some((perk) =>
-                    Boolean(
-                      (perk.displayProperties.name && regex.test(perk.displayProperties.name)) ||
-                        (perk.displayProperties.description &&
-                          regex.test(perk.displayProperties.description))
-                    )
-                  )
-              )
-            ))
-        );
-      },
-      perkname(item: DimItem, filterValue: string) {
-        const regex = startWordRegexp(filterValue);
-        return (
-          item.talentGrid?.nodes.some((node) => regex.test(node.name)) ||
-          (item.isDestiny2() &&
-            item.sockets &&
-            item.sockets.sockets.some((socket) =>
-              socket.plugOptions.some(
-                (plug) =>
-                  regex.test(plug.plugItem.displayProperties.name) ||
-                  plug.perks.some((perk) =>
-                    Boolean(perk.displayProperties.name && regex.test(perk.displayProperties.name))
-                  )
-              )
-            ))
-        );
-      },
+
       modslot(item: DimItem, filterValue: string) {
         const modSocketTypeHash = getSpecialtySocketMetadata(item);
         return (
@@ -1081,7 +1067,9 @@ function searchFilters(
         );
       },
       powerfulreward(item: D2Item) {
-        return item.pursuit?.rewards.some((r) => hashes.powerfulSources.includes(r.itemHash));
+        return item.pursuit?.rewards.some((r) =>
+          hashes.D2Values.powerfulSources.includes(r.itemHash)
+        );
       },
       light(item: DimItem, filterValue: string) {
         if (!item.primStat) {
@@ -1124,7 +1112,7 @@ function searchFilters(
           return (
             (mathCheck.test(filterValue) &&
               compareByOperator(item.energy.energyCapacity, filterValue)) ||
-            filterValue === hashes.energyCapacityTypes[item.energy.energyType]
+            filterValue === hashes.D2Values.energyNamesByEnum[item.energy.energyType]
           );
         }
       },
@@ -1171,17 +1159,17 @@ function searchFilters(
         if (!item) {
           return false;
         }
-        if (hashes.vendorHashes.restricted[filterValue]) {
+        if (hashes.D1Values.vendorHashes.restricted[filterValue]) {
           return (
-            hashes.vendorHashes.required[filterValue].some((vendorHash) =>
+            hashes.D1Values.vendorHashes.required[filterValue].some((vendorHash) =>
               item.sourceHashes.includes(vendorHash)
             ) &&
-            !hashes.vendorHashes.restricted[filterValue].some((vendorHash) =>
+            !hashes.D1Values.vendorHashes.restricted[filterValue].some((vendorHash) =>
               item.sourceHashes.includes(vendorHash)
             )
           );
         } else {
-          return hashes.vendorHashes.required[filterValue].some((vendorHash) =>
+          return hashes.D1Values.vendorHashes.required[filterValue].some((vendorHash) =>
             item.sourceHashes.includes(vendorHash)
           );
         }
@@ -1207,17 +1195,17 @@ function searchFilters(
         }
         if (filterValue === 'vanilla') {
           return item.year === 1;
-        } else if (hashes.D1ActivityHashes.restricted[filterValue]) {
+        } else if (hashes.D1Values.D1ActivityHashes.restricted[filterValue]) {
           return (
-            hashes.D1ActivityHashes.required[filterValue].some((sourceHash) =>
+            hashes.D1Values.D1ActivityHashes.required[filterValue].some((sourceHash) =>
               item.sourceHashes.includes(sourceHash)
             ) &&
-            !hashes.D1ActivityHashes.restricted[filterValue].some((sourceHash) =>
+            !hashes.D1Values.D1ActivityHashes.restricted[filterValue].some((sourceHash) =>
               item.sourceHashes.includes(sourceHash)
             )
           );
         } else {
-          return hashes.D1ActivityHashes.required[filterValue].some((sourceHash) =>
+          return hashes.D1Values.D1ActivityHashes.required[filterValue].some((sourceHash) =>
             item.sourceHashes.includes(sourceHash)
           );
         }
@@ -1260,7 +1248,7 @@ function searchFilters(
 
         const oneSocketPerPlug = item.sockets?.sockets
           .filter((socket) =>
-            hashes.curatedPlugsWhitelist.includes(
+            hashes.D2Values.curatedPlugsWhitelist.includes(
               socket?.plug?.plugItem?.plug?.plugCategoryHash || 0
             )
           )
@@ -1279,7 +1267,7 @@ function searchFilters(
         return item.bucket?.sort === 'Armor';
       },
       ikelos(item: D2Item) {
-        return hashes.ikelos.includes(item.hash);
+        return hashes.D2Values.ikelos.includes(item.hash);
       },
       cosmetic(item: DimItem) {
         return hashes.cosmeticTypes.includes(item.type);
@@ -1300,7 +1288,7 @@ function searchFilters(
         return item.sockets?.sockets.some((socket) =>
           Boolean(
             socket.plug?.plugItem.plug &&
-              socket.plug.plugItem.plug.plugCategoryHash === hashes.shaderBucket &&
+              socket.plug.plugItem.plug.plugCategoryHash === hashes.D2Values.shaderBucket &&
               socket.plug.plugItem.hash !== DEFAULT_SHADER
           )
         );
@@ -1320,7 +1308,7 @@ function searchFilters(
         return item.sockets?.sockets.some((socket) =>
           Boolean(
             socket.plug &&
-              !hashes.emptySocketHashes.includes(socket.plug.plugItem.hash) &&
+              !hashes.D2Values.emptySocketHashes.includes(socket.plug.plugItem.hash) &&
               socket.plug.plugItem.plug &&
               socket.plug.plugItem.plug.plugCategoryIdentifier.match(
                 /(v400.weapon.mod_(guns|damage|magazine)|enhancements.)/
@@ -1339,7 +1327,7 @@ function searchFilters(
           item.sockets.sockets.some((socket) =>
             Boolean(
               socket.plug &&
-                !hashes.emptySocketHashes.includes(socket.plug.plugItem.hash) &&
+                !hashes.D2Values.emptySocketHashes.includes(socket.plug.plugItem.hash) &&
                 socket.plug.plugItem.plug &&
                 socket.plug.plugItem.plug.plugCategoryIdentifier.match(
                   /(v400.weapon.mod_(guns|damage|magazine)|enhancements.)/
@@ -1387,7 +1375,7 @@ function searchFilters(
         );
       },
       // create a stat filter for each stat name
-      ...hashes.allStatNames.reduce((obj, name) => {
+      ...hashes.allWeaponArmorStatNames.reduce((obj, name) => {
         obj[name] = filterByStats(name, false);
         return obj;
       }, {}),
