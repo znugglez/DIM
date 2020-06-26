@@ -52,7 +52,6 @@ import { settingsSelector } from 'app/settings/reducer';
 import store from '../store/store';
 import { getStore } from 'app/inventory/stores-helpers';
 import { DestinyVersion } from '@destinyitemmanager/dim-api-types';
-import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
 
 /**
  * (to the tune of TMNT) ♪ string processing helper functions ♫
@@ -106,34 +105,6 @@ const replaceSeasonTagWithNumber = (s: string) => s.replace(/[a-z]+$/i, (tag) =>
 export const makeDupeID = (item: DimItem) =>
   (item.classified && String(item.hash)) ||
   `${item.name}${item.classType}${item.tier}${item.itemCategoryHashes.join('.')}`;
-
-export type FilterDefinition = {
-  keywords: string; // i18n key
-  hint: string; // i18n key
-  description: string; // i18n key
-  format: 'freeform' | 'range' | 'attribute';
-  destiny1: boolean;
-  destiny2: boolean;
-  breadcrumb?: (filterValue?: string) => JSX.Element;
-  contextGenerator?: (allItems: DimItem[]) => void;
-  suggestionsGenerator?: (defs: D2ManifestDefinitions) => string[];
-} & (
-  | {
-      filterValuePreprocessor?: (filterValue: string) => string;
-      filterFunction: (item: DimItem, filterValue?: string) => boolean | null | undefined;
-    }
-  | {
-      filterValuePreprocessor: (filterValue: string) => RegExp;
-      filterFunction: (item: DimItem, filterValue: RegExp) => boolean | null | undefined;
-    }
-  | {
-      filterValuePreprocessor: (filterValue: string) => (a: number) => boolean;
-      filterFunction: (
-        item: DimItem,
-        filterValue: (a: number) => boolean
-      ) => boolean | null | undefined;
-    }
-);
 
 /**
  * Selectors
