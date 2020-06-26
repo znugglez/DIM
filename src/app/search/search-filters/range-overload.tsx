@@ -2,38 +2,7 @@ import { D2Item } from 'app/inventory/item-types';
 import _ from 'lodash';
 import * as hashes from '../search-filter-values';
 import { FilterDefinition } from './filter-types';
-
-/** strings representing math checks */
-// const operators = ['<', '>', '<=', '>=', '='];
-// const operatorsInLengthOrder = _.sortBy(operators, (s) => -s.length);
-const rangeStringRegex = /^[<=>]{0,2}$/;
-
-function returnFalse() {
-  return false;
-}
-
-export function rangeStringToComparator(rangeString: string) {
-  const matchedRangeString = rangeString.match(rangeStringRegex);
-  if (!matchedRangeString) return returnFalse;
-
-  const [, operator, comparisonValueString] = matchedRangeString;
-  const comparisonValue = parseFloat(comparisonValueString);
-
-  switch (operator) {
-    case 'none':
-    case '=':
-      return (compare: number) => compare === comparisonValue;
-    case '<':
-      return (compare: number) => compare < comparisonValue;
-    case '<=':
-      return (compare: number) => compare <= comparisonValue;
-    case '>':
-      return (compare: number) => compare > comparisonValue;
-    case '>=':
-      return (compare: number) => compare >= comparisonValue;
-  }
-  return returnFalse;
-}
+import { rangeStringToComparator } from './range';
 
 const overloadedRangeFilters: FilterDefinition[] = [
   {
