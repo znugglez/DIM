@@ -56,7 +56,7 @@ const allFiltersByKeyword: Record<string, FilterDefinition> = {};
     });
   });
 
-// runs once per search. returns a function which should be run against each DimItem
+// runs once per search. returns a function which is run against each DimItem
 // and outputs bool-ish if the item meets the filter
 function prepFilter(allItems: DimItem[], keyword: string, filterValue?: string) {
   const filter = allFiltersByKeyword[keyword] ?? falseFilter;
