@@ -7,7 +7,7 @@ import { getTag } from 'app/inventory/dim-item-info';
 import { itemInfosSelector } from 'app/inventory/selectors';
 import { RootState } from 'app/store/reducers';
 import { DEFAULT_SHADER } from 'app/inventory/store/sockets';
-import { FilterDefinition } from './filter-types';
+import { FilterDefinition } from '../filter-types';
 
 let _duplicates: { [dupeID: string]: DimItem[] } | null = null; // Holds a map from item hash to count of occurrances of that hash
 const _lowerDupes = {};

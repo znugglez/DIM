@@ -3,16 +3,13 @@ import _ from 'lodash';
 // import * as hashes from '../search-filter-values';
 import { D2SeasonInfo } from 'data/d2/d2-season-info';
 import { getItemPowerCapFinalSeason } from 'app/utils/item-utils';
-import { FilterDefinition } from './filter-types';
+import { FilterDefinition } from '../filter-types';
+import { returnFalse } from '../load-search-filters';
 
 /** strings representing math checks */
 // const operators = ['<', '>', '<=', '>=', '='];
 // const operatorsInLengthOrder = _.sortBy(operators, (s) => -s.length);
 const rangeStringRegex = /^[<=>]{0,2}$/;
-
-function returnFalse() {
-  return false;
-}
 
 export function rangeStringToComparator(rangeString: string) {
   const matchedRangeString = rangeString.match(rangeStringRegex);

@@ -2,7 +2,7 @@ import { DimItem } from 'app/inventory/item-types';
 import _ from 'lodash';
 import { getRating, ReviewsState, shouldShowRating } from 'app/item-review/reducer';
 import { rangeStringToComparator } from './range';
-import { FilterDefinition } from './filter-types';
+import { FilterDefinition } from '../filter-types';
 
 const ratings = {} as ReviewsState['ratings'];
 

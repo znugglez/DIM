@@ -8,9 +8,9 @@ type ValidFilterOutput = boolean | null | undefined;
 
 type PreprocessorFilterPair<D extends DimItemVersion, T> =
   // filterValuePreprocessor doesn't exist,
-  // and filterFunction is run once per item
+  // filterFunction is provided filterValue and run once per item
   | {
-      filterFunction: (item: D) => ValidFilterOutput;
+      filterFunction: (item: D, filterValue: string) => ValidFilterOutput;
     }
   // filterValuePreprocessor returns type T once per *search*,
   // then type T is used (as arg 2) inside filterFunction once per item

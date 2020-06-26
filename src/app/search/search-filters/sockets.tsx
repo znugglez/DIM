@@ -1,5 +1,6 @@
-import { FilterDefinition, startWordRegexp } from '../search-filter';
+import { startWordRegexp } from '../search-filter';
 import { DimItem } from 'app/inventory/item-types';
+import { FilterDefinition } from '../filter-types';
 
 /**
  * feed in an object with a `name` and a `description` property,
@@ -36,8 +37,7 @@ const socketFilters: FilterDefinition[] = [
     hint: 'perk free-text search (any part)',
     description: 'find an item by perk',
     format: 'freeform',
-    destiny1: true,
-    destiny2: true,
+    destinyVersion: 0,
     filterValuePreprocessor: (filterValue: string) => startWordRegexp(filterValue),
     filterFunction: (item: DimItem, filterValue: RegExp) => {
       const socketStrings =
@@ -65,8 +65,7 @@ const socketFilters: FilterDefinition[] = [
     hint: 'perk free-text search (by name)',
     description: 'find an item by perkname',
     format: 'freeform',
-    destiny1: true,
-    destiny2: true,
+    destinyVersion: 0,
     filterValuePreprocessor: (filterValue: string) => startWordRegexp(filterValue),
     filterFunction: (item: DimItem, filterValue: RegExp) => {
       const socketStrings =

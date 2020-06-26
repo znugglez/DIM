@@ -1,5 +1,5 @@
-import { FilterDefinition } from '../search-filter';
 import { DimItem } from 'app/inventory/item-types';
+import { FilterDefinition } from '../filter-types';
 
 const advancedFilters: FilterDefinition[] = [
   {
@@ -7,8 +7,7 @@ const advancedFilters: FilterDefinition[] = [
     hint: 'id',
     description: 'find an item by id',
     format: 'freeform',
-    destiny1: true,
-    destiny2: true,
+    destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) => item.id === filterValue,
   },
   {
@@ -16,8 +15,7 @@ const advancedFilters: FilterDefinition[] = [
     hint: 'hash',
     description: 'find an item by hash',
     format: 'freeform',
-    destiny1: true,
-    destiny2: true,
+    destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) => item.hash.toString() === filterValue,
   },
 ];
