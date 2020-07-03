@@ -2,10 +2,10 @@ import { DimItem, D2Item } from 'app/inventory/item-types';
 // import * as hashes from '../search-filter-values';
 
 import { FilterDefinition } from '../filter-types';
-import { returnFalse } from '../load-search-filters';
 import * as hashes from '../search-filter-values';
 import { rangeStringToComparator } from './range-numeric';
 import { maxStatLoadout, maxLightItemSet } from 'app/loadout/auto-loadouts';
+import { returnFalse } from 'app/utils/empty';
 
 let _maxStatValues: {
   [key: string]: { [key: string]: { value: number; base: number } };

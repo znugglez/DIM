@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { D2SeasonInfo } from 'data/d2/d2-season-info';
 import { getItemPowerCapFinalSeason } from 'app/utils/item-utils';
 import { FilterDefinition } from '../filter-types';
-import { returnFalse } from '../load-search-filters';
+import { returnFalse } from 'app/utils/empty';
 
 /** strings representing math checks */
 // const operators = ['<', '>', '<=', '>=', '='];

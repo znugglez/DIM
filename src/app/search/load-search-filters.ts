@@ -7,38 +7,23 @@ import socketFilters from './search-filters/sockets';
 import { t } from 'app/i18next-t';
 import { FilterDefinition } from './filter-types';
 import { DimItem } from 'app/inventory/item-types';
+import { returnFalse, doNothing } from 'app/utils/empty';
 
-export function returnFalse() {
-  return false;
-}
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export function doNothing() {}
-
+/** a placeholder filter which always returns false */
 const falseFilter: FilterDefinition = {
   keywords: 'false',
   hint: '',
   description: '',
   format: 'attribute',
   destinyVersion: 0,
-  filterFunction: () => false,
+  filterFunction: returnFalse,
 };
 
+// obviously we don't really do this
 const currentDestinyVersion = 2;
 
-// const allFilters = [
-//   advancedFilters,
-//   dupeFilters,
-//   simpleRangeFilters,
-//   overloadedRangeFilters,
-//   ratingsFilters,
-//   socketFilters,
-// ];
-// const applicableFilters = allFilters.flatMap(fg=>fg.filter(f=>f.destinyVersion===0||f.destinyVersion===currentDestinyVersion));
-// clear the exported arrays, wiping out any filters that didn't make it into applicableFilters
-// i can't actually do this but i wish i could
-// allFilters.forEach(fg=>fg.length=0);
-
 const allFiltersByKeyword: Record<string, FilterDefinition> = {};
+
 [
   advancedFilters,
   dupeFilters,
@@ -58,17 +43,24 @@ const allFiltersByKeyword: Record<string, FilterDefinition> = {};
 
 // runs once per search. returns a function which is run against each DimItem
 // and outputs bool-ish if the item meets the filter
-function prepFilter(allItems: DimItem[], keyword: string, filterValue?: string) {
+export function prepareFilter(allItems: DimItem[], keyword: string, filterValue: string) {
   const filter = allFiltersByKeyword[keyword] ?? falseFilter;
-  const contextGenerator = filter.contextGenerator ?? doNothing;
-  contextGenerator(allItems);
+
+  // run the contextGenerator against all items if it exists. this prepares things like "maxpower" or "dupe"
+  (filter.contextGenerator ?? doNothing)(allItems);
 
   if (filter.filterValuePreprocessor) {
-    const preprocessed = filter.filterValuePreprocessor(filterValue);
-    if (typeof preprocessed === 'function' && !filter.filterFunction) {
-      return preprocessed;
+    // if there is a filterValuePreprocessor, there will be a filterValue
+    const preprocessedfilterValue = filter.filterValuePreprocessor(filterValue);
+
+    // if filterValuePreprocessor returns a function, that's all we need
+    if (typeof preprocessedfilterValue === 'function') {
+      return preprocessedfilterValue;
     }
-    return (item) => filter.filterFunction(item, preprocessed);
+
+    // if it returns any other type, feed that into filterFunction
+    return (item: DimItem) => filter.filterFunction?.(item, preprocessedfilterValue);
   }
-  return (item) => filter.filterFunction(item, filterValue);
+  // if there was no preprocessor, the raw filterValue string goes into the filter function alongside each item
+  return (item: DimItem) => filter.filterFunction?.(item, filterValue);
 }

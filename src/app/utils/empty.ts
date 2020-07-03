@@ -23,3 +23,13 @@ const EMPTY_MAP = new Map();
 export function emptyMap<K, V>(): Map<K, V> {
   return EMPTY_MAP as Map<K, V>;
 }
+
+/** it always returns false. that's the tweet. */
+export function returnFalse() {
+  return false;
+}
+
+/** does absolutely nothing but still counts as a function */
+export function doNothing() {
+  // do absolutely nothing
+}
