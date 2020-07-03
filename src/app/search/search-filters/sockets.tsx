@@ -15,7 +15,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'randomroll',
     hint: 'randomroll',
     description: 'randomroll',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) =>
       Boolean(item.energy) || item.sockets?.sockets.some((s) => s.hasRandomizedPlugItems),
@@ -24,7 +24,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'curated',
     hint: 'curated',
     description: 'curated',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) => {
       if (!item) {
@@ -57,7 +57,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'hasshader',
     hint: 'hasshader',
     description: 'hasshader',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) =>
       item.sockets?.sockets.some((socket) =>
@@ -72,7 +72,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'hasornament',
     hint: 'hasornament',
     description: 'hasornament',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) =>
       item.sockets?.sockets.some((socket) =>
@@ -89,7 +89,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'hasmod',
     hint: 'hasmod',
     description: 'hasmod',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) =>
       item.sockets?.sockets.some((socket) =>
@@ -111,7 +111,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'modded',
     hint: 'modded',
     description: 'modded',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) =>
       Boolean(item.energy) &&
@@ -133,7 +133,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'modslot',
     hint: 'modslot',
     description: 'modslot',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     filterFunction: (item: D2Item, filterValue: string) => {
       const modSocketTypeHash = getSpecialtySocketMetadata(item);
@@ -147,7 +147,7 @@ const socketFilters: FilterDefinition[] = [
     keywords: 'holdsmod',
     hint: 'holdsmod',
     description: 'holdsmod',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     filterFunction: (item: D2Item, filterValue: string) => {
       const modSocketTypeHash = getSpecialtySocketMetadata(item);

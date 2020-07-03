@@ -14,35 +14,52 @@ const falseFilter: FilterDefinition = {
   keywords: 'false',
   hint: '',
   description: '',
-  format: 'attribute',
+  format: 'simple',
   destinyVersion: 0,
   filterFunction: returnFalse,
 };
 
-// obviously we don't really do this
-const currentDestinyVersion = 2;
-
 const allFiltersByKeyword: Record<string, FilterDefinition> = {};
 
-[
-  advancedFilters,
-  dupeFilters,
-  simpleRangeFilters,
-  overloadedRangeFilters,
-  ratingsFilters,
-  socketFilters,
-]
-  .flatMap((fg) =>
-    fg.filter((f) => f.destinyVersion === 0 || f.destinyVersion === currentDestinyVersion)
-  )
-  .forEach((f) => {
-    ((t(f.keywords) as unknown) as string[]).forEach((k) => {
-      allFiltersByKeyword[k] = f;
+export function populateFilters(currentDestinyVersion: 1 | 2) {
+  [
+    advancedFilters,
+    dupeFilters,
+    simpleRangeFilters,
+    overloadedRangeFilters,
+    ratingsFilters,
+    socketFilters,
+  ]
+    .flatMap((fg) =>
+      fg.filter((f) => f.destinyVersion === 0 || f.destinyVersion === currentDestinyVersion)
+    )
+    .forEach((f) => {
+      // FIX THIS UNKNOWN once array-returning t() is worked out
+      ((t(f.keywords) as unknown) as string[]).forEach((k) => {
+        allFiltersByKeyword[k] = f;
+      });
     });
-  });
+}
 
-// runs once per search. returns a function which is run against each DimItem
-// and outputs bool-ish if the item meets the filter
+export function generateSuggestionsForFilter(filterDefinition: FilterDefinition) {
+  switch (filterDefinition.format) {
+    case 'query':
+      break;
+    case 'simple':
+      break;
+    case 'freeform':
+      break;
+    case 'range':
+      break;
+    case 'rangeoverload':
+      break;
+  }
+}
+
+// runs once per search.
+// returns a function to be run against each DimItem.
+// that function outputs bool-ish (boolean | null | undefined)
+// if the item meets the conditions of that filter
 export function prepareFilter(allItems: DimItem[], keyword: string, filterValue: string) {
   const filter = allFiltersByKeyword[keyword] ?? falseFilter;
 

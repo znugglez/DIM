@@ -29,21 +29,33 @@ type PreprocessorFilterPairs = PreprocessorFilterPair<preprocessedValues>;
 
 // the main event
 export type FilterDefinition = {
-  // i18n key pointing to array of localized keywords, which trigger the filter when typed into search bar
+  /** i18n key pointing to array of localized keywords, which trigger the filter when typed into search bar */
   keywords: string;
-  // i18n key pointing to a very brief description to show alongside filter suggestions
+  /** i18n key pointing to a very brief description to show alongside filter suggestions */
   hint: string;
-  // i18n key pointing to a full description to show in filter help
+  /** i18n key pointing to a full description to show in filter help */
   description: string;
-  // not sure if we want this. it would be used to generically make suggestions if suggestionsGenerator is missing
-  format: 'freeform' | 'range' | 'rangeoverload' | 'attribute';
-  // destinyVersion - 1 or 2, or if a filter applies to both, 0
+  /**
+   * not sure if we want this. it would be used to generically make suggestions if suggestionsGenerator is missing.
+   *
+   * simple - an 'is/not' filter. the filter itself knows everything it's looking for
+   *
+   * query - a starting stem and a pre-known value, like "tag:keep". a filterValue will be involved and will match a string we expect
+   *
+   * freeform - a starting stem and a freeform value. the filterValue will be some arbitrary string we test against other strings
+   *
+   * range - a starting stem and a mathlike string afterward like <=5
+   *
+   * rangeoverload - a starting stem like "masterwork" and then either a mathlike string or a word
+   */
+  format: 'simple' | 'query' | 'freeform' | 'range' | 'rangeoverload';
+  /** destinyVersion - 1 or 2, or if a filter applies to both, 0 */
   destinyVersion: 0 | 1 | 2;
-  // a rich element to show in fancy search bar, instead of just letters
+  /** a rich element to show in fancy search bar, instead of just letters */
   breadcrumb?: (filterValue?: string) => JSX.Element;
-  // given the manifest, prep a set of suggestion based on, idk, perk names for instance?
+  /** given the manifest, prep a set of suggestion based on, idk, perk names for instance? */
   suggestionsGenerator?: (defs: D2ManifestDefinitions) => string[];
-  // is provided a list of all items. calculates some kind of stats before running the search
+  /** is provided a list of all items. calculates some kind of stats before running the search */
   contextGenerator?: (allItems: DimItem[], filterValue?: string) => void;
 } & PreprocessorFilterPairs;
 

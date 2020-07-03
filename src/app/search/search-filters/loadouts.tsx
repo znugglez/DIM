@@ -10,7 +10,7 @@ const loadoutFilters: FilterDefinition[] = [
     keywords: 'inloadout',
     hint: 'inloadout',
     description: 'inloadout',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 0,
     contextGenerator: collectItemsInLoadouts,
     filterFunction: (item: DimItem) => _loadoutItemIds.has(item.id),

@@ -34,7 +34,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'tier',
     hint: 'tier',
     description: 'tier',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) =>
       item.tier.toLowerCase() === (tierMap[filterValue] || filterValue),
@@ -43,7 +43,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'ammotype',
     hint: 'ammotype',
     description: 'ammotype',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     filterFunction: (item: D2Item, filterValue: string) =>
       item.ammoType === d2AmmoTypes[filterValue],
@@ -52,7 +52,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'classtype',
     hint: 'classtype',
     description: 'classtype',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) =>
       !item.classified && item.classType === classes.indexOf(filterValue),
@@ -61,7 +61,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'reacquirable',
     hint: 'reacquirable',
     description: 'reacquirable',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 0,
     filterFunction: (item: DimItem) =>
       Boolean(
@@ -75,7 +75,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'cosmetic',
     hint: 'cosmetic',
     description: 'cosmetic',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 0,
     filterFunction: (item: DimItem) => cosmeticTypes.includes(item.type),
   },
@@ -83,7 +83,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'haslight',
     hint: 'haslight',
     description: 'haslight',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 0,
     filterFunction: (item: DimItem) => item.primStat && lightStats.includes(item.primStat.statHash),
   },
@@ -91,7 +91,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'breaker',
     hint: 'breaker',
     description: 'breaker',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     filterFunction: (item: D2Item, filterValue: string) =>
       item.breakerType && D2Values.breakerTypes[filterValue] === item.breakerType.hash,
@@ -100,16 +100,25 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'dmg',
     hint: 'dmg',
     description: 'dmg',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) =>
       getItemDamageShortName(item) === filterValue,
   },
   {
+    keywords: 'type',
+    hint: 'type',
+    description: 'type',
+    format: 'query',
+    destinyVersion: 0,
+    filterFunction: (item: DimItem, filterValue: string) =>
+      item.type?.toLowerCase() === filterValue,
+  },
+  {
     keywords: 'category',
     hint: 'category',
     description: 'category',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     filterFunction: (item: D2Item, filterValue: string) => {
       const categoryHash = categoryHashFilters[filterValue.replace(/\s/g, '')];
@@ -120,12 +129,11 @@ const knownValuesFilters: FilterDefinition[] = [
       return item.itemCategoryHashes.includes(categoryHash);
     },
   },
-
   {
     keywords: 'powerfulreward',
     hint: 'powerfulreward',
     description: 'powerfulreward',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     filterFunction: (item: D2Item) =>
       item.pursuit?.rewards.some((r) => D2Values.powerfulSources.includes(r.itemHash)),
@@ -134,7 +142,7 @@ const knownValuesFilters: FilterDefinition[] = [
     keywords: 'source',
     hint: 'source',
     description: 'source',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     filterFunction: (item: D2Item, filterValue: string) => {
       if (!item && (!D2Sources[filterValue] || !D2EventPredicateLookup[filterValue])) {

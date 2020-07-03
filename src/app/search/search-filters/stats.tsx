@@ -37,7 +37,7 @@ const statFilters: FilterDefinition[] = [
     keywords: 'maxstatloadout',
     hint: 'maxstatloadout',
     description: 'maxstatloadout',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     contextGenerator: findMaxStatLoadout,
     filterFunction: (item: D2Item, filterValue: string) => {
@@ -53,7 +53,7 @@ const statFilters: FilterDefinition[] = [
     keywords: 'maxstatloadout',
     hint: 'maxstatloadout',
     description: 'maxstatloadout',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     contextGenerator: findMaxStatLoadout,
     filterFunction: (item: D2Item, filterValue: string) => {
@@ -68,7 +68,7 @@ const statFilters: FilterDefinition[] = [
     keywords: 'maxstatvalue',
     hint: 'maxstatvalue',
     description: 'maxstatvalue',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     contextGenerator: gatherHighestStatsPerSlot,
     filterFunction: (item: D2Item, filterValue: string) =>
@@ -78,7 +78,7 @@ const statFilters: FilterDefinition[] = [
     keywords: 'maxbasestatvalue',
     hint: 'maxbasestatvalue',
     description: 'maxbasestatvalue',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 2,
     contextGenerator: gatherHighestStatsPerSlot,
     filterFunction: (item: D2Item, filterValue: string) =>
@@ -88,7 +88,7 @@ const statFilters: FilterDefinition[] = [
     keywords: 'maxpower',
     hint: 'maxpower',
     description: 'maxpower',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 2,
     contextGenerator: calculateMaxPowerLoadoutItems,
     filterFunction: (item: DimItem) => _maxPowerLoadoutItems.includes(item.id),

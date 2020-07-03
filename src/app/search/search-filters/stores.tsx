@@ -14,7 +14,7 @@ const locationFilters: FilterDefinition[] = [
     keywords: 'location',
     hint: 'location',
     description: 'location',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) => {
       let storeIndex = 0;
@@ -46,7 +46,7 @@ const locationFilters: FilterDefinition[] = [
     keywords: 'onwrongclass',
     hint: 'onwrongclass',
     description: 'onwrongclass',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 0,
     filterFunction: (item: DimItem) => {
       const ownerStore = getStore(stores, item.owner);
@@ -66,7 +66,7 @@ const locationFilters: FilterDefinition[] = [
     keywords: 'owner',
     hint: 'owner',
     description: 'owner',
-    format: 'attribute',
+    format: 'query',
     destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) => {
       let desiredStore = '';

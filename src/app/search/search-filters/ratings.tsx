@@ -42,12 +42,12 @@ const ratingsFilters: FilterDefinition[] = [
     keywords: 'hasRating',
     hint: 'item has rating',
     description: 'filter by item having rating count',
-    format: 'attribute',
+    format: 'simple',
     destinyVersion: 0,
-    filterFunction: (item: DimItem, filterValue: string) => {
+    filterFunction: (item: DimItem) => {
       if (!$featureFlags.reviewsEnabled) return false;
       const dtrRating = getRating(item, ratings);
-      return Boolean(filterValue.length !== 0 && dtrRating?.overallScore);
+      return dtrRating?.overallScore !== undefined;
     },
   },
 ];
