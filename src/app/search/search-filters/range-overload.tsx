@@ -4,13 +4,15 @@ import * as hashes from '../search-filter-values';
 import * as D2Values from '../d2-known-values';
 import { FilterDefinition } from '../filter-types';
 import { rangeStringToComparator } from './range-numeric';
+import seasonTags from 'data/d2/season-tags.json';
+import { getItemPowerCapFinalSeason } from 'app/utils/item-utils';
 
 /** matches a filterValue that's probably a math check */
 const mathCheck = /^[\d<>=]/;
 
 // overloadedRangeFilters: stuff that may test a range, but also accepts a word
 
-// this word might become a number like arrival=>11,
+// this word might become a number like arrival ====> 11,
 // then be processed normally in a number check
 
 // or the word might be checked differently than the number, like
@@ -56,6 +58,46 @@ const overloadedRangeFilters: FilterDefinition[] = [
         item.energy && filterValue === D2Values.energyNamesByEnum[item.energy.energyType];
     },
   },
+  {
+    keywords: 'season',
+    hint: "item's season",
+    description: "filter by item's season of origin",
+    format: 'range',
+    destinyVersion: 2,
+    filterValuePreprocessor: seasonRangeStringToComparator,
+    filterFunction: (item: D2Item, filterValue: (compare: number) => boolean) =>
+      filterValue(item.season),
+  },
+  {
+    keywords: 'sunsetsafter',
+    hint: "item's power limit",
+    description: "filter by item's power limit",
+    format: 'range',
+    destinyVersion: 2,
+    filterValuePreprocessor: seasonRangeStringToComparator,
+    filterFunction: (item: D2Item, filterValue: (compare: number) => boolean) => {
+      const itemFinalSeason = getItemPowerCapFinalSeason(item);
+      return filterValue(itemFinalSeason ?? 0);
+    },
+  },
 ];
 
 export default overloadedRangeFilters;
+
+/**
+ * replaces a word with a corresponding season
+ *
+ * i.e. turns `<=forge` into `<=5`
+ *
+ * use only on simple filter values where there's not other letters
+ */
+function replaceSeasonTagWithNumber(s: string) {
+  return s.replace(/[a-z]+$/i, (tag) => seasonTags[tag]);
+}
+
+/**
+ * replaces a possible season keyword with its number, then returns usual math comparator
+ */
+function seasonRangeStringToComparator(rangeString: string) {
+  return rangeStringToComparator(replaceSeasonTagWithNumber(rangeString));
+}
