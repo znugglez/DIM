@@ -35,7 +35,6 @@ import { D2EventPredicateLookup } from 'data/d2/d2-event-info';
 import { D2SeasonInfo } from 'data/d2/d2-season-info';
 import D2Sources from 'data/d2/source-info';
 import { DimStore } from '../inventory/store-types';
-import { InventoryWishListRoll } from '../wishlists/wishlists';
 import { Loadout } from '../loadout/loadout-types';
 import { RootState } from '../store/reducers';
 import missingSources from 'data/d2/missing-source-info';
@@ -365,7 +364,7 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
           .map(([tag]) => `sunsetsafter:${tag}`)
       : []),
     ...(isD2
-      ? Object.keys(hashes.breakerTypes).map((breakerType) => `breaker:${breakerType}`)
+      ? Object.keys(hashes.D2Values.breakerTypes).map((breakerType) => `breaker:${breakerType}`)
       : []),
     // "source:" keyword plus one for each source
     ...(isD2
@@ -1092,7 +1091,7 @@ function searchFilters(
       },
       breaker(item: D2Item, filterValue: string) {
         if (item.breakerType) {
-          return hashes.breakerTypes[filterValue] === item.breakerType.hash;
+          return hashes.D2Values.breakerTypes[filterValue] === item.breakerType.hash;
         }
       },
       hascapacity(item: D2Item) {
@@ -1227,7 +1226,7 @@ function searchFilters(
 
         const oneSocketPerPlug = item.sockets?.sockets
           .filter((socket) =>
-            hashes.curatedPlugsAllowList.includes(
+            hashes.D2Values.curatedPlugsAllowList.includes(
               socket?.plug?.plugItem?.plug?.plugCategoryHash || 0
             )
           )
@@ -1314,32 +1313,7 @@ function searchFilters(
           )
         );
       },
-      trashlist(item: D2Item) {
-        return Boolean(inventoryWishListRolls[item.id]?.isUndesirable);
-      },
-      wishlist(item: D2Item) {
-        return Boolean(
-          inventoryWishListRolls[item.id] && !inventoryWishListRolls[item.id].isUndesirable
-        );
-      },
-      wishlistdupe(item: D2Item) {
-        if (!this.dupe(item) || !_duplicates) {
-          return false;
-        }
-        const dupeId = makeDupeID(item);
-        const itemDupes = _duplicates[dupeId];
 
-        return itemDupes.some(this.wishlist);
-      },
-      wishlistnotes(item: D2Item, filterValue: string) {
-        const potentialWishListRoll = inventoryWishListRolls[item.id];
-
-        return (
-          Boolean(potentialWishListRoll) &&
-          potentialWishListRoll.notes &&
-          potentialWishListRoll.notes.toLocaleLowerCase().includes(filterValue)
-        );
-      },
       ammoType(item: D2Item, filterValue: string) {
         return (
           item.ammoType ===

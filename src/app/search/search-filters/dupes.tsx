@@ -1,6 +1,6 @@
 import { DimItem } from 'app/inventory/item-types';
 import _ from 'lodash';
-import { rangeStringToComparator } from './range';
+import { rangeStringToComparator } from './range-numeric';
 import { chainComparator, compareBy, reverseComparator } from '../../utils/comparators';
 import { getTag } from 'app/inventory/dim-item-info';
 
@@ -9,7 +9,7 @@ import { RootState } from 'app/store/reducers';
 import { DEFAULT_SHADER } from 'app/inventory/store/sockets';
 import { FilterDefinition } from '../filter-types';
 
-let _duplicates: { [dupeID: string]: DimItem[] } | null = null; // Holds a map from item hash to count of occurrances of that hash
+export let _duplicates: { [dupeID: string]: DimItem[] } | null = null; // Holds a map from item hash to count of occurrances of that hash
 const _lowerDupes = {};
 
 const dupeFilters: FilterDefinition[] = [
@@ -20,16 +20,7 @@ const dupeFilters: FilterDefinition[] = [
     format: 'attribute',
     destinyVersion: 0,
     contextGenerator: initDupes,
-    filterFunction: (item: DimItem) => {
-      const dupeId = makeDupeID(item);
-      return (
-        _duplicates?.[dupeId] &&
-        !item.itemCategoryHashes.includes(58) &&
-        item.hash !== DEFAULT_SHADER &&
-        item.bucket.hash !== 1506418338 &&
-        _duplicates[dupeId].length > 1
-      );
-    },
+    filterFunction: checkIfIsDupe,
   },
   {
     keywords: 'dupelower',
@@ -56,6 +47,17 @@ const dupeFilters: FilterDefinition[] = [
 ];
 
 export default dupeFilters;
+
+export function checkIfIsDupe(item: DimItem) {
+  const dupeId = makeDupeID(item);
+  return (
+    _duplicates?.[dupeId] &&
+    !item.itemCategoryHashes.includes(58) &&
+    item.hash !== DEFAULT_SHADER &&
+    item.bucket.hash !== 1506418338 &&
+    _duplicates[dupeId].length > 1
+  );
+}
 
 /**
  * outputs a string combination of the identifying features of an item, or the hash if classified.
@@ -86,7 +88,7 @@ const dupeComparator = reverseComparator(
   )
 );
 
-function initDupes(
+export function initDupes(
   allItems: DimItem[]
   // stores: DimStore[],itemInfos: ItemInfos
 ) {

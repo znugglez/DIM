@@ -6,9 +6,6 @@ import {
 } from './d2-known-values';
 import { D1LightStats } from './d1-known-values';
 
-export * as D1Values from './d1-known-values';
-export * as D2Values from './d2-known-values';
-
 // ✨ magic values ✨
 // this file has non-programatically decided information
 // hashes, names, & enums, hand-crafted and chosen by us

@@ -61,7 +61,7 @@ export const emptySocketHashes = [
 ];
 
 /** these are checked against default rolls to determine if something's curated */
-export const curatedPlugsWhitelist = [
+export const curatedPlugsAllowList = [
   7906839, // frames
   683359327, // guards
   1041766312, // blades
@@ -131,3 +131,13 @@ export const Armor2ModPlugCategories = {
   leg: 2111701510,
   classitem: 912441879,
 } as const;
+
+export const breakerTypes = {
+  barrier: 485622768,
+  antibarrier: 485622768,
+  shieldpiercing: 485622768,
+  overload: 2611060930,
+  disruption: 2611060930,
+  unstoppable: 3178805705,
+  stagger: 3178805705,
+};

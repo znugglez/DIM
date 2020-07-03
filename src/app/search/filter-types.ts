@@ -7,9 +7,10 @@ type DimItemVersion = DimItem | D1Item | D2Item;
 type ValidFilterOutput = boolean | null | undefined;
 
 type PreprocessorFilterPair<D extends DimItemVersion, T> =
-  // filterValuePreprocessor doesn't exist,
-  // filterFunction is provided filterValue and run once per item
+  // filterValuePreprocessor doesn't exist
+  // and filterFunction is provided filterValue and run once per item
   | {
+      // filterValuePreprocessor: undefined;
       filterFunction: (item: D, filterValue: string) => ValidFilterOutput;
     }
   // filterValuePreprocessor returns type T once per *search*,
@@ -22,6 +23,7 @@ type PreprocessorFilterPair<D extends DimItemVersion, T> =
   // and that function is used AS the filterFunction once per item
   | {
       filterValuePreprocessor: (filterValue: string) => (item: D) => ValidFilterOutput;
+      // filterFunction: undefined;
     };
 
 // some acceptable types for filterValuePreprocessor to return
@@ -39,15 +41,15 @@ type VersionUnion =
   //    i.e. which items have dupes, or what your highest total chest armor is
   | ({
       destinyVersion: 0;
-      contextGenerator?: (allItems: DimItem[]) => void;
+      contextGenerator?: (allItems: DimItem[], filterValue?: string) => void;
     } & PreprocessorFilterPairVersion<DimItem>)
   | ({
       destinyVersion: 1;
-      contextGenerator?: (allItems: D1Item[]) => void;
+      contextGenerator?: (allItems: D1Item[], filterValue?: string) => void;
     } & PreprocessorFilterPairVersion<D1Item>)
   | ({
       destinyVersion: 2;
-      contextGenerator?: (allItems: D2Item[]) => void;
+      contextGenerator?: (allItems: D2Item[], filterValue?: string) => void;
     } & PreprocessorFilterPairVersion<D2Item>);
 
 // the main event

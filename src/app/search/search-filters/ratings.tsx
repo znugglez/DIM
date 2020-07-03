@@ -1,7 +1,7 @@
 import { DimItem } from 'app/inventory/item-types';
 import _ from 'lodash';
 import { getRating, ReviewsState, shouldShowRating } from 'app/item-review/reducer';
-import { rangeStringToComparator } from './range';
+import { rangeStringToComparator } from './range-numeric';
 import { FilterDefinition } from '../filter-types';
 
 const ratings = {} as ReviewsState['ratings'];
@@ -35,8 +35,19 @@ const ratingsFilters: FilterDefinition[] = [
     filterFunction: (item: DimItem, filterValue: (compare: number) => boolean) => {
       if (!$featureFlags.reviewsEnabled) return false;
       const dtrRating = getRating(item, ratings);
-
       return dtrRating?.ratingCount !== undefined && filterValue(dtrRating?.overallScore);
+    },
+  },
+  {
+    keywords: 'hasRating',
+    hint: 'item has rating',
+    description: 'filter by item having rating count',
+    format: 'attribute',
+    destinyVersion: 0,
+    filterFunction: (item: DimItem, filterValue: string) => {
+      if (!$featureFlags.reviewsEnabled) return false;
+      const dtrRating = getRating(item, ratings);
+      return Boolean(filterValue.length !== 0 && dtrRating?.overallScore);
     },
   },
 ];

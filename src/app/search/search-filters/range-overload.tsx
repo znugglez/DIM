@@ -2,7 +2,7 @@ import { D2Item } from 'app/inventory/item-types';
 import _ from 'lodash';
 import * as hashes from '../search-filter-values';
 import { FilterDefinition } from '../filter-types';
-import { rangeStringToComparator } from './range';
+import { rangeStringToComparator } from './range-numeric';
 
 const overloadedRangeFilters: FilterDefinition[] = [
   {

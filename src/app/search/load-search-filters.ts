@@ -1,6 +1,6 @@
 import advancedFilters from './search-filters/advanced';
 import dupeFilters from './search-filters/dupes';
-import simpleRangeFilters from './search-filters/range';
+import simpleRangeFilters from './search-filters/range-numeric';
 import overloadedRangeFilters from './search-filters/range-overload';
 import ratingsFilters from './search-filters/ratings';
 import socketFilters from './search-filters/sockets';

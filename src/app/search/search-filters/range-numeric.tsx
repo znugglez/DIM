@@ -60,7 +60,7 @@ const simpleRangeFilters: FilterDefinition[] = [
     hint: "item's season",
     description: "filter by item's season of origin",
     format: 'range',
-    destinyVersion: 0,
+    destinyVersion: 2,
     filterValuePreprocessor: rangeStringToComparator,
     filterFunction: (item: D2Item, filterValue: (compare: number) => boolean) =>
       filterValue(item.season),
@@ -95,7 +95,7 @@ const simpleRangeFilters: FilterDefinition[] = [
     hint: "item's power limit",
     description: "filter by item's power limit",
     format: 'range',
-    destinyVersion: 0,
+    destinyVersion: 2,
     filterValuePreprocessor: rangeStringToComparator,
     filterFunction: (item: D2Item, filterValue: (compare: number) => boolean) =>
       // anything with no powerCap has no known limit, so treat it like it's 99999999
@@ -106,25 +106,11 @@ const simpleRangeFilters: FilterDefinition[] = [
     hint: "item's power limit",
     description: "filter by item's power limit",
     format: 'range',
-    destinyVersion: 0,
+    destinyVersion: 2,
     filterValuePreprocessor: rangeStringToComparator,
     filterFunction: (item: D2Item, filterValue: (compare: number) => boolean) => {
       const itemFinalSeason = getItemPowerCapFinalSeason(item);
       return filterValue(itemFinalSeason ?? 0);
-    },
-  },
-  {
-    keywords: 'quality',
-    hint: "item's quality",
-    description: "filter by item's quality",
-    format: 'range',
-    destinyVersion: 1,
-    filterValuePreprocessor: rangeStringToComparator,
-    filterFunction: (item: D1Item, filterValue: (compare: number) => boolean) => {
-      if (!item.quality) {
-        return false;
-      }
-      return filterValue(item.quality.min);
     },
   },
 
