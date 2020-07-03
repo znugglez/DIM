@@ -298,7 +298,6 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
           modded: ['modded'],
           hasShader: ['shaded', 'hasshader'],
           hasOrnament: ['ornamented', 'hasornament'],
-          ikelos: ['ikelos'],
           masterworked: ['masterwork', 'masterworks'],
           powerfulreward: ['powerfulreward'],
           randomroll: ['randomroll'],
@@ -364,6 +363,9 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
           .filter(([, seasonNumber]) => seasonNumber > 10)
           .reverse()
           .map(([tag]) => `sunsetsafter:${tag}`)
+      : []),
+    ...(isD2
+      ? Object.keys(hashes.breakerTypes).map((breakerType) => `breaker:${breakerType}`)
       : []),
     // "source:" keyword plus one for each source
     ...(isD2
@@ -674,6 +676,7 @@ function searchFilters(
             case 'stack':
             case 'count':
             case 'energycapacity':
+            case 'breaker':
             case 'maxbasestatvalue':
             case 'maxstatloadout':
             case 'maxstatvalue':
@@ -930,7 +933,7 @@ function searchFilters(
             return false;
         }
 
-        return item.bucket.accountWide
+        return item.bucket.accountWide && !item.location.inPostmaster
           ? item.owner !== 'vault'
           : item.owner === stores[storeIndex].id;
       },
@@ -1087,6 +1090,11 @@ function searchFilters(
           );
         }
       },
+      breaker(item: D2Item, filterValue: string) {
+        if (item.breakerType) {
+          return hashes.breakerTypes[filterValue] === item.breakerType.hash;
+        }
+      },
       hascapacity(item: D2Item) {
         return Boolean(item.energy);
       },
@@ -1219,7 +1227,7 @@ function searchFilters(
 
         const oneSocketPerPlug = item.sockets?.sockets
           .filter((socket) =>
-            hashes.D2Values.curatedPlugsWhitelist.includes(
+            hashes.curatedPlugsAllowList.includes(
               socket?.plug?.plugItem?.plug?.plugCategoryHash || 0
             )
           )
@@ -1236,9 +1244,6 @@ function searchFilters(
       },
       armor(item: DimItem) {
         return item.bucket?.sort === 'Armor';
-      },
-      ikelos(item: D2Item) {
-        return hashes.D2Values.ikelos.includes(item.hash);
       },
       cosmetic(item: DimItem) {
         return hashes.cosmeticTypes.includes(item.type);
@@ -1271,7 +1276,7 @@ function searchFilters(
               socket.plug.plugItem.itemSubType === DestinyItemSubType.Ornament &&
               socket.plug.plugItem.hash !== DEFAULT_GLOW &&
               !DEFAULT_ORNAMENTS.includes(socket.plug.plugItem.hash) &&
-              !socket.plug.plugItem.itemCategoryHashes.includes(DEFAULT_GLOW_CATEGORY)
+              !socket.plug.plugItem.itemCategoryHashes?.includes(DEFAULT_GLOW_CATEGORY)
           )
         );
       },

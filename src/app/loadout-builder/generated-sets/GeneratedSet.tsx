@@ -9,14 +9,14 @@ import { getNumValidSets, calculateTotalTier, statTier, sumEnabledStats } from '
 import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
 import BungieImage from 'app/dim-ui/BungieImage';
 import { DestinyStatDefinition } from 'bungie-api-ts/destiny2';
-import { statHashes } from '../process';
+import { statHashes } from '../types';
 import { t } from 'app/i18next-t';
 import styles from './GeneratedSet.m.scss';
 import { editLoadout } from 'app/loadout/LoadoutDrawer';
 import { Loadout } from 'app/loadout/loadout-types';
 import { assignModsToArmorSet } from './mod-utils';
 import { Armor2ModPlugCategories } from 'app/utils/item-utils';
-import { LoadoutBuilderAction } from '../LoadoutBuilder';
+import { LoadoutBuilderAction } from '../loadoutBuilderReducer';
 
 interface Props {
   set: ArmorSet;

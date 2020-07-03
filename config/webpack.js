@@ -319,6 +319,12 @@ module.exports = (env) => {
         chunks: ['gdriveReturn'],
       }),
 
+      new HtmlWebpackPlugin({
+        inject: false,
+        filename: '404.html',
+        template: '!html-loader!src/404.html',
+      }),
+
       // Generate the .htaccess file (kind of an abuse of HtmlWebpack plugin just for templating)
       new HtmlWebpackPlugin({
         filename: '.htaccess',
@@ -423,7 +429,7 @@ module.exports = (env) => {
     // In dev we use babel to compile TS, and fork off a separate typechecker
     config.plugins.push(
       new ForkTsCheckerWebpackPlugin({
-        eslint: true,
+        eslint: { files: './src/**/*.{ts,tsx,js,jsx}' },
       })
     );
 

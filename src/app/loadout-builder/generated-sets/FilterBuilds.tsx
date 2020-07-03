@@ -6,8 +6,10 @@ import TierSelect from './TierSelect';
 import _ from 'lodash';
 import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
 import styles from './FilterBuilds.m.scss';
-import { statHashes, statKeys } from '../process';
 import { statTier } from './utils';
+import { useDispatch } from 'react-redux';
+import { setSetting } from 'app/settings/actions';
+import { statHashes, statKeys } from '../types';
 
 /**
  * A control for filtering builds by stats, and controlling the priority order of stats.
@@ -15,28 +17,35 @@ import { statTier } from './utils';
 export default function FilterBuilds({
   sets,
   minimumPower,
+  minimumStatTotal,
   selectedStore,
   stats,
   defs,
   order,
   assumeMasterwork,
-  onMinimumPowerChanged,
-  onStatOrderChanged,
   onStatFiltersChanged,
-  onMasterworkAssumptionChange,
 }: {
   sets: readonly ArmorSet[];
   minimumPower: number;
+  minimumStatTotal: number;
   selectedStore: D2Store;
   stats: { [statType in StatTypes]: MinMaxIgnored };
   defs: D2ManifestDefinitions;
   order: StatTypes[];
   assumeMasterwork: boolean;
-  onMinimumPowerChanged(minimumPower: number): void;
-  onStatOrderChanged(order: StatTypes[]): void;
   onStatFiltersChanged(stats: { [statType in StatTypes]: MinMaxIgnored }): void;
-  onMasterworkAssumptionChange(assumeMasterwork: boolean): void;
 }) {
+  const dispatch = useDispatch();
+
+  const onStatOrderChanged = (sortOrder: StatTypes[]) => {
+    dispatch(
+      setSetting(
+        'loStatSortOrder',
+        sortOrder.map((type) => statHashes[type])
+      )
+    );
+  };
+
   const statRanges = useMemo(() => {
     if (!sets.length) {
       return _.mapValues(statHashes, () => ({ min: 0, max: 10, ignored: false }));
@@ -72,7 +81,7 @@ export default function FilterBuilds({
           <input
             type="checkbox"
             checked={assumeMasterwork}
-            onChange={(e) => onMasterworkAssumptionChange(e.target.checked)}
+            onChange={(e) => dispatch(setSetting('loAssumeMasterwork', e.target.checked))}
           />
           <span>{t('LoadoutBuilder.AssumeMasterwork')}</span>
         </div>
@@ -84,7 +93,18 @@ export default function FilterBuilds({
             min={750}
             max={parseInt(selectedStore.stats.maxGearPower!.value.toString(), 10)}
             initialValue={minimumPower}
-            onChange={onMinimumPowerChanged}
+            onChange={(minPower: number) => dispatch(setSetting('loMinPower', minPower))}
+          />
+        </div>
+        <div className={styles.powerSelect}>
+          <label id="minStatTotal" title={t('LoadoutBuilder.SelectMinStatTotalDescription')}>
+            {t('LoadoutBuilder.SelectMinStatTotal')}
+          </label>
+          <RangeSelector
+            min={40}
+            max={82}
+            initialValue={minimumStatTotal}
+            onChange={(minTotal: number) => dispatch(setSetting('loMinStatTotal', minTotal))}
           />
         </div>
       </div>

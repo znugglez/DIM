@@ -8,7 +8,7 @@ import BestRatedIcon from './BestRatedIcon';
 import BungieImage from 'app/dim-ui/BungieImage';
 import { InventoryWishListRoll } from 'app/wishlists/wishlists';
 import _ from 'lodash';
-import { statWhiteList } from 'app/inventory/store/stats';
+import { statAllowList } from 'app/inventory/store/stats';
 
 // TODO: Connect this to redux
 export default function PlugTooltip({
@@ -34,8 +34,7 @@ export default function PlugTooltip({
     defs.Collectible.get(plug.plugItem.collectibleHash).sourceString;
 
   // display perk's synergy with masterwork stat
-  const synergyStat =
-    item.masterworkInfo?.statHash &&
+  const synergyStat = item.masterworkInfo?.statHash &&
     plug.plugItem.investmentStats &&
     plug.plugItem.investmentStats.some(
       (stat) =>
@@ -43,8 +42,7 @@ export default function PlugTooltip({
         stat.statTypeHash &&
         item.masterworkInfo &&
         item.masterworkInfo.statHash === stat.statTypeHash
-    ) &&
-    ` (${item.masterworkInfo.statName})`;
+    ) && <span className="synergyStat"> ({item.masterworkInfo.statName})</span>;
 
   return (
     <>
@@ -70,7 +68,7 @@ export default function PlugTooltip({
         <div className="plug-stats">
           {plug.stats &&
             _.sortBy(Object.keys(plug.stats), (h) =>
-              statWhiteList.indexOf(parseInt(h, 10))
+              statAllowList.indexOf(parseInt(h, 10))
             ).map((statHash) => (
               <StatValue
                 key={statHash + '_'}

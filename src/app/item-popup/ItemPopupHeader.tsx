@@ -16,6 +16,8 @@ import { DestinyClass, DamageType } from 'bungie-api-ts/destiny2';
 import ElementIcon from 'app/inventory/ElementIcon';
 import { getItemDamageShortName } from 'app/utils/item-utils';
 import { getItemPowerCapFinalSeason } from 'app/utils/item-utils';
+import { PowerCapDisclaimer } from 'app/dim-ui/PowerCapDisclaimer';
+import BungieImage from 'app/dim-ui/BungieImage';
 
 export default function ItemPopupHeader({
   item,
@@ -126,12 +128,16 @@ export default function ItemPopupHeader({
         {item.isDestiny2() && item.ammoType > 0 && (
           <div className={clsx('ammo-type', ammoTypeClass(item.ammoType))} />
         )}
+        {item.isDestiny2() && item.breakerType && (
+          <BungieImage className="small-icon" src={item.breakerType.displayProperties.icon} />
+        )}
         <div className="item-type-info">{lightString}</div>
         {item.taggable && <ItemTagSelector item={item} />}
       </div>
       {powerCapString && (
         <div className="item-subtitle">
-          <div className="">{`${t('Stats.PowerCap')}: ${powerCapString}`}</div>
+          <div>{`${t('Stats.PowerCap')}: ${powerCapString}`}</div>
+          <PowerCapDisclaimer item={item} />
         </div>
       )}
       {$featureFlags.reviewsEnabled && item.reviewable && <ExpandedRating item={item} />}

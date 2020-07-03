@@ -10,7 +10,7 @@ import {
   DestinyEnergyType,
 } from 'bungie-api-ts/destiny2';
 import { chainComparator, compareBy, Comparator } from 'app/utils/comparators';
-import { statKeys } from '../process';
+import { statKeys } from '../types';
 import { getSpecialtySocketMetadata } from 'app/utils/item-utils';
 import { canSetTakeMods } from './mod-utils';
 
@@ -25,6 +25,11 @@ const unwantedSockets = new Set([
   2973005342, // Shaders
   3356843615, // Ornaments
   2457930460, // Empty masterwork slot
+]);
+const unwantedCategories = new Set([
+  1742617626, // ItemCategory "Armor Mods: Ornaments"
+  1875601085, // ItemCategory "Armor Mods: Glow Effects"
+  1404791674, // ItemCategory "Ghost Mods: Projections"
 ]);
 
 /**
@@ -55,10 +60,7 @@ export function filterPlugs(socket: DimSocket) {
   // Remove unwanted sockets by category hash
   if (
     unwantedSockets.has(plugItem.plug.plugCategoryHash) ||
-    (plugItem.itemCategoryHashes &&
-      (plugItem.itemCategoryHashes.includes(1742617626) || // exotic armor ornanments
-      plugItem.itemCategoryHashes.includes(1875601085) || // glows
-        plugItem.itemCategoryHashes.includes(1404791674))) // ghost projections
+    plugItem.itemCategoryHashes?.some((h) => unwantedCategories.has(h))
   ) {
     return false;
   }
@@ -133,8 +135,12 @@ function canAllModsBeUsed(set: ArmorSet, seasonalMods: readonly LockedModBase[])
       const itemModCategories =
         getSpecialtySocketMetadata(item)?.compatiblePlugCategoryHashes || [];
 
-      // Not currently checking energy of mod and armour matches.
-      if (itemModCategories.includes(mod.mod.plug.plugCategoryHash)) {
+      if (
+        itemModCategories.includes(mod.mod.plug.plugCategoryHash) &&
+        item.isDestiny2() &&
+        (mod.mod.plug.energyCost.energyType === DestinyEnergyType.Any ||
+          mod.mod.plug.energyCost.energyType === item.energy?.energyType)
+      ) {
         if (!modArrays[item.bucket.hash]) {
           modArrays[item.bucket.hash] = [];
         }

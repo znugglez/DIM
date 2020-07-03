@@ -461,7 +461,7 @@ AddDefaultCharset utf-8
 # attacks.
 #
 # This can be done by setting a `Content Security Policy` which
-# whitelists trusted sources of content for your website.
+# lists trusted sources of content for your website.
 #
 # The example header below allows ONLY scripts that are loaded from
 # the current website's origin (no inline scripts, no CDN, etc).
@@ -736,6 +736,7 @@ AddEncoding br .br
     # Redirect unknown paths to index.html
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !\.(json|wasm|js|css|png|jpg|map)(\.(gz|br))?$
     RewriteRule (.*) index.html [QSA,L]
 </IfModule>
 

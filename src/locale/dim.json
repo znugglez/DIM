@@ -41,7 +41,9 @@
     "SetNotes": "Set notes to \"{{notes}}\" for item ID {{id}}",
     "SetTag": "Set tag to {{tag}} for item ID {{id}}",
     "Setting": "Set {{key}} to {{value}}",
-    "TagCleanup": "Cleaned up tags for dismantled items"
+    "TagCleanup": "Cleaned up {{count}} tag for dismantled items",
+    "TagCleanupUnknown": "Cleaned up some tags for dismantled items",
+    "TagCleanup_plural": "Cleaned up {{count}} tags for dismantled items"
   },
   "Bucket": {
     "Armor": "Armor",
@@ -146,7 +148,8 @@
     "Title": "Something went wrong"
   },
   "ErrorPanel": {
-    "Description": "This is likely an issue that affects all third-party apps. Check to see if Bungie.net loads, or the Destiny 2 Companion App works."
+    "Description": "This is likely an issue that affects all third-party apps. Check to see if Bungie.net loads, or the Destiny 2 Companion App works.",
+    "Troubleshooting": "Troubleshooting Guide"
   },
   "FarmingMode": {
     "D2Desc": "DIM is preventing items from going to the Postmaster by making sure there's always one empty space per item type on {{store}}. It is moving items to the vault to make room.",
@@ -191,6 +194,7 @@
     "AmmoType": "Shows items based on their ammo type.",
     "ArmorCategory": "Shows armors based on their category.",
     "Ascended": "Shows items that have an ascend node and if they have been ascended or not.",
+    "Breaker": "Filter by breaker type or corresponding champion type.",
     "BulkClear": "Removed tag from 1 item.",
     "BulkClear_plural": "Removed tags from {{count}} items.",
     "BulkRevert": "Reverted tag on 1 item.",
@@ -557,6 +561,8 @@
     "SearchPlaceholder": "Filter (e.g., \"vigil of heroes\")",
     "SelectMax": "- Max -",
     "SelectMin": "- Min -",
+    "SelectMinStatTotal": "Minimum Armor Stat Total",
+    "SelectMinStatTotalDescription": "Sets the minimum stat total for a single armor piece (excluding class items).",
     "SelectPerks": "Select Perks",
     "SelectPower": "Minimum Power",
     "SelectPowerDescription": "Sets a minimum power level for the entire loadout (not individual pieces)",
@@ -715,6 +721,7 @@
     "Columns": {
       "Archetype": "Archetype",
       "BaseStats": "Base Stats",
+      "Breaker": "Breaker",
       "CustomTotal": "Custom Total",
       "Damage": "Damage",
       "Element": "Element",
@@ -735,7 +742,7 @@
       "PerksMods": "Perks, Mods & Shaders",
       "Quality": "Quality %",
       "Rating": "Rating",
-      "Reacquireable": "Reacquireable",
+      "Reacquirable": "Reacquirable",
       "Season": "Season",
       "Source": "Source",
       "StatQuality": "Stat Quality",
@@ -843,6 +850,7 @@
     "OfMaxRoll": "{{range}} of max roll",
     "PercentHelp": "Click for more information about what Stats Quality is.",
     "PowerCap": "Power Limit",
+    "PowerCapDisclaimer": "Power Limit information may be incorrect for armor from any raid, or weapons from the raids \"Last Wish\" and \"Garden of Salvation.\"",
     "PowerCapWithSeason": "{{powerCap}} (Season {{finalSeason}} max)",
     "PowerModifier": "Power granted by seasonal experience progression",
     "Prestige": "Prestige Level: {{level}}\n{{exp}}xp until 5 motes of light.",
@@ -937,8 +945,6 @@
   "Vendors": {
     "Catalysts": "Catalysts",
     "Collections": "Collections",
-    "DestinyMap": "Find collectibles on lowlines' Destiny map",
-    "DestinySets": "Browse more item sets at Destiny Sets",
     "Engram": "Reward Engram",
     "FilterToUnacquired": "Only show uncollected items",
     "Vendors": "Vendors"

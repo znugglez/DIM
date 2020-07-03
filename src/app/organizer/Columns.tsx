@@ -46,10 +46,11 @@ import { getRating } from 'app/item-review/reducer';
 import { ghostBadgeContent } from 'app/inventory/BadgeInfo';
 import { source } from 'app/inventory/spreadsheets';
 import { statHashByName } from 'app/search/search-filter-values';
-import { statWhiteList } from 'app/inventory/store/stats';
+import { statAllowList } from 'app/inventory/store/stats';
 import styles from './ItemTable.m.scss';
 import { t } from 'app/i18next-t';
 import { percent, getColor } from 'app/shell/filters';
+import { PowerCapDisclaimer } from 'app/dim-ui/PowerCapDisclaimer';
 
 /**
  * Get the ID used to select whether this column is shown or not.
@@ -135,7 +136,7 @@ export function getColumns(
         };
       }
     ),
-    (s) => statWhiteList.indexOf(s.statHash)
+    (s) => statAllowList.indexOf(s.statHash)
   );
 
   const isGhost = itemsType === 'ghost';
@@ -187,7 +188,7 @@ export function getColumns(
               };
             }
           ),
-          (s) => statWhiteList.indexOf(s.statHash)
+          (s) => statAllowList.indexOf(s.statHash)
         )
       : [];
 
@@ -199,7 +200,7 @@ export function getColumns(
       cell: (value: string, item) => (
         <ItemPopupTrigger item={item}>
           {(ref, onClick) => (
-            <div ref={ref} onClick={onClick}>
+            <div ref={ref} onClick={onClick} className={styles.itemIcon}>
               <BungieImage src={value} className={clsx({ [styles.masterwork]: item.masterwork })} />
               {item.masterwork && (
                 <div
@@ -238,6 +239,7 @@ export function getColumns(
                 powerCap: value,
                 finalSeason: getItemPowerCapFinalSeason(item),
               })}
+              <PowerCapDisclaimer item={item} />
             </>
           ),
         defaultSort: SortDirection.DESC,
@@ -305,8 +307,8 @@ export function getColumns(
           value === true ? 'is:wishlist' : value === false ? 'is:trashlist' : 'not:wishlist',
       },
     destinyVersion === 2 && {
-      id: 'reacquireable',
-      header: t('Organizer.Columns.Reacquireable'),
+      id: 'reacquirable',
+      header: t('Organizer.Columns.Reacquirable'),
       value: (item) =>
         item.isDestiny2() &&
         item.collectibleState !== null &&
@@ -314,7 +316,7 @@ export function getColumns(
         !(item.collectibleState & DestinyCollectibleState.PurchaseDisabled),
       defaultSort: SortDirection.DESC,
       cell: booleanCell,
-      filter: (value) => (value ? 'is:reacquireable' : 'not:reaquireable'),
+      filter: (value) => (value ? 'is:reacquirable' : 'not:reaquireable'),
     },
     $featureFlags.reviewsEnabled && {
       id: 'rating',
@@ -421,6 +423,20 @@ export function getColumns(
           ) : undefined,
         filter: (value) => `perkname:"${value}"`,
       },
+    (destinyVersion === 2 || isWeapon) && {
+      id: 'breaker',
+      header: t('Organizer.Columns.Breaker'),
+      value: (item) => item.isDestiny2() && item.breakerType?.displayProperties.name,
+      cell: (value, item) =>
+        item.isDestiny2() &&
+        value && (
+          <BungieImage
+            className={styles.inlineIcon}
+            src={item.breakerType!.displayProperties.icon}
+          />
+        ),
+      filter: (_, item) => `is:${getItemDamageShortName(item)}`,
+    },
     {
       id: 'perks',
       header:
