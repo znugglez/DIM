@@ -9,6 +9,7 @@ import { DimItem } from 'app/inventory/item-types';
 import { returnFalse, doNothing } from 'app/utils/empty';
 import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
 
+/** a fake t that returns string[] */
 function t(_key: string): string[] {
   return [];
 }
@@ -39,7 +40,7 @@ export function populateFilters(currentDestinyVersion: 1 | 2) {
     )
     .forEach((f) => {
       // FIX THIS UNKNOWN once array-returning t() is worked out
-      ((t(f.keywords) as unknown) as string[]).forEach((k) => {
+      t(f.keywords).forEach((k) => {
         allFiltersByKeyword[k] = f;
       });
     });
