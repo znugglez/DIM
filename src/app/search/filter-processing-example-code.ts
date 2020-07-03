@@ -4,10 +4,14 @@ import simpleRangeFilters from './search-filters/range-numeric';
 import overloadedRangeFilters from './search-filters/range-overload';
 import ratingsFilters from './search-filters/ratings';
 import socketFilters from './search-filters/sockets';
-import { t } from 'app/i18next-t';
 import { FilterDefinition } from './filter-types';
 import { DimItem } from 'app/inventory/item-types';
 import { returnFalse, doNothing } from 'app/utils/empty';
+import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
+
+function t(_key: string): string[] {
+  return [];
+}
 
 /** a placeholder filter which always returns false */
 const falseFilter: FilterDefinition = {
@@ -41,18 +45,45 @@ export function populateFilters(currentDestinyVersion: 1 | 2) {
     });
 }
 
-export function generateSuggestionsForFilter(filterDefinition: FilterDefinition) {
-  switch (filterDefinition.format) {
-    case 'query':
-      break;
-    case 'simple':
-      break;
-    case 'freeform':
-      break;
-    case 'range':
-      break;
-    case 'rangeoverload':
-      break;
+function expandStringCombinations(stringGroups: string[][]) {
+  let results = [''];
+  stringGroups.forEach((stringGroup) => {
+    results = results.flatMap((stem) => stringGroup.map((suffix) => `${stem}:${suffix}`));
+  });
+  return results;
+}
+
+const operators = ['<', '>', '<=', '>=', '='];
+
+export function generateSuggestionsForFilter(
+  defs: D2ManifestDefinitions,
+  filterDefinition: FilterDefinition
+) {
+  const suggestions = filterDefinition.suggestionsGenerator;
+  if (typeof suggestions == 'function') {
+    return suggestions(defs);
+  } else {
+    const thisFilterKeywords = t(filterDefinition.keywords);
+    const nestedSuggestions = (suggestions === undefined
+      ? []
+      : typeof suggestions[0] === 'string'
+      ? [suggestions]
+      : suggestions) as string[][];
+
+    switch (filterDefinition.format) {
+      case 'simple':
+        return expandStringCombinations([['is', 'not']]);
+      case 'query':
+        return expandStringCombinations([thisFilterKeywords, ...nestedSuggestions]);
+      case 'freeform':
+        return expandStringCombinations([thisFilterKeywords, ['']]);
+      case 'range':
+        return expandStringCombinations([thisFilterKeywords, ...nestedSuggestions, operators]);
+      case 'rangeoverload':
+        return expandStringCombinations([thisFilterKeywords, ...nestedSuggestions, operators]);
+      default:
+        return [];
+    }
   }
 }
 
