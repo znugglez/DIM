@@ -2,7 +2,8 @@ import { DimItem, D2Item } from 'app/inventory/item-types';
 import { FilterDefinition } from '../filter-types';
 import { getItemDamageShortName } from 'app/utils/item-utils';
 import * as D2Values from '../d2-known-values';
-import { DestinyAmmunitionType } from 'bungie-api-ts/destiny2';
+import * as D1Values from '../d1-known-values';
+import { DestinyAmmunitionType, DestinyCollectibleState } from 'bungie-api-ts/destiny2';
 import { cosmeticTypes, lightStats } from '../search-filter-values';
 import { D2EventPredicateLookup } from 'data/d2/d2-event-info';
 import D2Sources from 'data/d2/source-info';
@@ -21,6 +22,11 @@ const d2AmmoTypes = {
   heavy: DestinyAmmunitionType.Heavy,
 };
 const classes = ['titan', 'hunter', 'warlock'];
+
+const categoryHashFilters: { [key: string]: number } = {
+  ...D1Values.D1ItemCategoryHashes,
+  ...D2Values.D2ItemCategoryHashes,
+};
 
 // filters relying on curated known values
 const knownValuesFilters: FilterDefinition[] = [
@@ -52,6 +58,20 @@ const knownValuesFilters: FilterDefinition[] = [
       !item.classified && item.classType === classes.indexOf(filterValue),
   },
   {
+    keywords: 'reacquirable',
+    hint: 'reacquirable',
+    description: 'reacquirable',
+    format: 'attribute',
+    destinyVersion: 0,
+    filterFunction: (item: DimItem) =>
+      Boolean(
+        item.isDestiny2() &&
+          item.collectibleState !== null &&
+          !(item.collectibleState & DestinyCollectibleState.NotAcquired) &&
+          !(item.collectibleState & DestinyCollectibleState.PurchaseDisabled)
+      ),
+  },
+  {
     keywords: 'cosmetic',
     hint: 'cosmetic',
     description: 'cosmetic',
@@ -67,7 +87,6 @@ const knownValuesFilters: FilterDefinition[] = [
     destinyVersion: 0,
     filterFunction: (item: DimItem) => item.primStat && lightStats.includes(item.primStat.statHash),
   },
-
   {
     keywords: 'breaker',
     hint: 'breaker',
@@ -85,6 +104,31 @@ const knownValuesFilters: FilterDefinition[] = [
     destinyVersion: 0,
     filterFunction: (item: DimItem, filterValue: string) =>
       getItemDamageShortName(item) === filterValue,
+  },
+  {
+    keywords: 'category',
+    hint: 'category',
+    description: 'category',
+    format: 'attribute',
+    destinyVersion: 2,
+    filterFunction: (item: D2Item, filterValue: string) => {
+      const categoryHash = categoryHashFilters[filterValue.replace(/\s/g, '')];
+
+      if (!categoryHash) {
+        return false;
+      }
+      return item.itemCategoryHashes.includes(categoryHash);
+    },
+  },
+
+  {
+    keywords: 'powerfulreward',
+    hint: 'powerfulreward',
+    description: 'powerfulreward',
+    format: 'attribute',
+    destinyVersion: 2,
+    filterFunction: (item: D2Item) =>
+      item.pursuit?.rewards.some((r) => D2Values.powerfulSources.includes(r.itemHash)),
   },
   {
     keywords: 'source',

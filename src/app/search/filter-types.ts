@@ -61,7 +61,7 @@ export type FilterDefinition = {
   // i18n key pointing to a full description to show in filter help
   description: string;
   // not sure if we want this. it would be used to generically make suggestions if suggestionsGenerator is missing
-  format: 'freeform' | 'range' | 'attribute';
+  format: 'freeform' | 'range' | 'rangeoverload' | 'attribute';
   // a rich element to show in fancy search bar, instead of just letters
   breadcrumb?: (filterValue?: string) => JSX.Element;
   // given the manifest, prep a set of suggestion based on, idk, perk names for instance?

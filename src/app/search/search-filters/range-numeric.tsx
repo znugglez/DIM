@@ -1,4 +1,4 @@
-import { DimItem, D2Item, D1Item } from 'app/inventory/item-types';
+import { DimItem, D2Item } from 'app/inventory/item-types';
 import _ from 'lodash';
 // import * as hashes from '../search-filter-values';
 import { D2SeasonInfo } from 'data/d2/d2-season-info';
