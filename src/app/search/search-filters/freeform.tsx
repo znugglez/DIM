@@ -12,12 +12,20 @@ const isLatinBased = (() =>
   ))();
 
 /** escape special characters for a regex */
-export const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 /** Make a Regexp that searches starting at a word boundary */
-export const startWordRegexp = (s: string) =>
+function startWordRegexp(s: string) {
   // Only some languages effectively use the \b regex word boundary
-  new RegExp(`${isLatinBased ? '\\b' : ''}${escapeRegExp(s)}`, 'i');
+  return new RegExp(`${isLatinBased ? '\\b' : ''}${escapeRegExp(s)}`, 'i');
+}
+
+/** remove starting and ending quotes ('") e.g. for notes:"this string" */
+function trimQuotes(s: string) {
+  return s.replace(/(^['"]|['"]$)/g, '');
+}
 
 /** returns input string toLower, and stripped of accents if it's a latin language */
 const plainString = (s: string): string => (isLatinBased ? latinise(s) : s).toLowerCase();

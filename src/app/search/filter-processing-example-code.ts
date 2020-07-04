@@ -35,11 +35,12 @@ export function populateFilters(currentDestinyVersion: 1 | 2) {
     ratingsFilters,
     socketFilters,
   ]
-    .flatMap((fg) =>
-      fg.filter((f) => f.destinyVersion === 0 || f.destinyVersion === currentDestinyVersion)
+    .flatMap((filterGroup) =>
+      filterGroup.filter(
+        (filter) => filter.destinyVersion === 0 || filter.destinyVersion === currentDestinyVersion
+      )
     )
     .forEach((f) => {
-      // FIX THIS UNKNOWN once array-returning t() is worked out
       t(f.keywords).forEach((k) => {
         allFiltersByKeyword[k] = f;
       });
