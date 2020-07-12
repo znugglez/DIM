@@ -119,23 +119,23 @@ export function parseQuery(query: string): QueryAST {
     switch (token[0]) {
       case 'filter': {
         tokens.pop();
-        const keyword = token[1];
-        if (keyword === 'not') {
+
+        const negate = token[1] === 'not';
+        const keyword = token[1] === 'is' || token[1] === 'not' ? token[2] : token[1];
+        const returnFilter = {
+          op: 'filter',
+          type: keyword,
+          args: token[2],
+        } as const;
+
+        if (negate) {
           // `not:` a synonym for `-is:`. We could fix this up in filter execution but I chose to normalize it here.
           return {
             op: 'not',
-            operand: {
-              op: 'filter',
-              type: 'is',
-              args: token[2],
-            },
+            operand: returnFilter,
           };
         } else {
-          return {
-            op: 'filter',
-            type: keyword,
-            args: token[2],
-          };
+          return returnFilter;
         }
       }
       case 'not': {
@@ -361,7 +361,9 @@ export function* lexer(query: string): Generator<Token> {
 export function canonicalizeQuery(query: QueryAST, depth = 0) {
   switch (query.op) {
     case 'filter':
-      return `${query.type}:${/\s/.test(query.args) ? `"${query.args}"` : query.args}`;
+      return `${query.type === query.args ? 'is' : query.type}:${
+        /\s/.test(query.args) ? `"${query.args}"` : query.args
+      }`;
     case 'not':
       return `-${canonicalizeQuery(query.operand, depth + 1)}`;
     case 'and':

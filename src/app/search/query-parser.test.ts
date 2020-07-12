@@ -31,7 +31,7 @@ const cases = [
   ['cluster tracking'], // => "cluster" and "tracking"
   ['name:"Hard Light"'],
   ["name:'Hard Light'"],
-  ['name:"Gahlran\'s Right Hand"'],
+  [`name:"Gahlran's Right Hand"`],
   ['-witherhoard'],
   ['perk:수집가'],
   ['perk:"수집가"'],

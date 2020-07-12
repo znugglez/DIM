@@ -94,7 +94,7 @@ Object {
         Object {
           "args": "hunter",
           "op": "filter",
-          "type": "is",
+          "type": "hunter",
         },
         Object {
           "args": ">=540",
@@ -109,7 +109,7 @@ Object {
         Object {
           "args": "warlock",
           "op": "filter",
-          "type": "is",
+          "type": "warlock",
         },
         Object {
           "args": ">=560",
@@ -178,12 +178,12 @@ Object {
         Object {
           "args": "weapon",
           "op": "filter",
-          "type": "is",
+          "type": "weapon",
         },
         Object {
           "args": "sniperrifle",
           "op": "filter",
-          "type": "is",
+          "type": "sniperrifle",
         },
       ],
     },
@@ -195,7 +195,7 @@ Object {
           Object {
             "args": "armor",
             "op": "filter",
-            "type": "is",
+            "type": "armor",
           },
           Object {
             "args": "arrival",
@@ -268,12 +268,12 @@ Object {
         Object {
           "args": "weapon",
           "op": "filter",
-          "type": "is",
+          "type": "weapon",
         },
         Object {
           "args": "sniperrifle",
           "op": "filter",
-          "type": "is",
+          "type": "sniperrifle",
         },
       ],
     },
@@ -283,7 +283,7 @@ Object {
         Object {
           "args": "armor",
           "op": "filter",
-          "type": "is",
+          "type": "armor",
         },
         Object {
           "args": "arrival",
@@ -351,7 +351,7 @@ Object {
       "operand": Object {
         "args": "exotic",
         "op": "filter",
-        "type": "is",
+        "type": "exotic",
       },
     },
     Object {
@@ -459,18 +459,18 @@ Object {
       "operand": Object {
         "args": "equipped",
         "op": "filter",
-        "type": "is",
+        "type": "equipped",
       },
     },
     Object {
       "args": "haspower",
       "op": "filter",
-      "type": "is",
+      "type": "haspower",
     },
     Object {
       "args": "incurrentchar",
       "op": "filter",
-      "type": "is",
+      "type": "incurrentchar",
     },
   ],
 }
@@ -514,7 +514,7 @@ Object {
       "operand": Object {
         "args": "exotic",
         "op": "filter",
-        "type": "is",
+        "type": "exotic",
       },
     },
     Object {
@@ -522,7 +522,7 @@ Object {
       "operand": Object {
         "args": "locked",
         "op": "filter",
-        "type": "is",
+        "type": "locked",
       },
     },
     Object {
@@ -530,7 +530,7 @@ Object {
       "operand": Object {
         "args": "maxpower",
         "op": "filter",
-        "type": "is",
+        "type": "maxpower",
       },
     },
     Object {
@@ -538,7 +538,7 @@ Object {
       "operand": Object {
         "args": "tagged",
         "op": "filter",
-        "type": "is",
+        "type": "tagged",
       },
     },
     Object {
@@ -729,7 +729,7 @@ exports[`parse |is:armor2.0|: ast 1`] = `
 Object {
   "args": "armor2.0",
   "op": "filter",
-  "type": "is",
+  "type": "armor2.0",
 }
 `;
 
@@ -750,19 +750,19 @@ Object {
     Object {
       "args": "blue",
       "op": "filter",
-      "type": "is",
+      "type": "blue",
     },
     Object {
       "args": "haspower",
       "op": "filter",
-      "type": "is",
+      "type": "haspower",
     },
     Object {
       "op": "not",
       "operand": Object {
         "args": "maxpower",
         "op": "filter",
-        "type": "is",
+        "type": "maxpower",
       },
     },
   ],
@@ -805,19 +805,19 @@ Object {
     Object {
       "args": "blue",
       "op": "filter",
-      "type": "is",
+      "type": "blue",
     },
     Object {
       "args": "haspower",
       "op": "filter",
-      "type": "is",
+      "type": "haspower",
     },
     Object {
       "op": "not",
       "operand": Object {
         "args": "maxpower",
         "op": "filter",
-        "type": "is",
+        "type": "maxpower",
       },
     },
   ],
@@ -857,7 +857,7 @@ Object {
     Object {
       "args": "blue",
       "op": "filter",
-      "type": "is",
+      "type": "blue",
     },
     Object {
       "op": "or",
@@ -865,12 +865,12 @@ Object {
         Object {
           "args": "weapon",
           "op": "filter",
-          "type": "is",
+          "type": "weapon",
         },
         Object {
           "args": "armor",
           "op": "filter",
-          "type": "is",
+          "type": "armor",
         },
       ],
     },
@@ -879,7 +879,7 @@ Object {
       "operand": Object {
         "args": "maxpower",
         "op": "filter",
-        "type": "is",
+        "type": "maxpower",
       },
     },
   ],
@@ -927,7 +927,7 @@ Object {
     Object {
       "args": "rocketlauncher",
       "op": "filter",
-      "type": "is",
+      "type": "rocketlauncher",
     },
     Object {
       "op": "or",
@@ -987,7 +987,7 @@ Object {
     Object {
       "args": "rocketlauncher",
       "op": "filter",
-      "type": "is",
+      "type": "rocketlauncher",
     },
     Object {
       "op": "not",
@@ -1048,7 +1048,7 @@ Object {
     Object {
       "args": "rocketlauncher",
       "op": "filter",
-      "type": "is",
+      "type": "rocketlauncher",
     },
     Object {
       "op": "not",
@@ -1109,7 +1109,7 @@ Object {
     Object {
       "args": "weapon",
       "op": "filter",
-      "type": "is",
+      "type": "weapon",
     },
     Object {
       "op": "or",
@@ -1117,7 +1117,7 @@ Object {
         Object {
           "args": "sniperrifle",
           "op": "filter",
-          "type": "is",
+          "type": "sniperrifle",
         },
         Object {
           "op": "and",
@@ -1125,7 +1125,7 @@ Object {
             Object {
               "args": "armor",
               "op": "filter",
-              "type": "is",
+              "type": "armor",
             },
             Object {
               "args": "arrival",
@@ -1196,12 +1196,12 @@ Object {
         Object {
           "args": "weapon",
           "op": "filter",
-          "type": "is",
+          "type": "weapon",
         },
         Object {
           "args": "sniperrifle",
           "op": "filter",
-          "type": "is",
+          "type": "sniperrifle",
         },
       ],
     },
@@ -1213,7 +1213,7 @@ Object {
           "operand": Object {
             "args": "armor",
             "op": "filter",
-            "type": "is",
+            "type": "armor",
           },
         },
         Object {
@@ -1271,7 +1271,7 @@ Object {
     Object {
       "args": "weapon",
       "op": "filter",
-      "type": "is",
+      "type": "weapon",
     },
     Object {
       "op": "or",
@@ -1279,7 +1279,7 @@ Object {
         Object {
           "args": "sniperrifle",
           "op": "filter",
-          "type": "is",
+          "type": "sniperrifle",
         },
         Object {
           "op": "and",
@@ -1287,7 +1287,7 @@ Object {
             Object {
               "args": "armor",
               "op": "filter",
-              "type": "is",
+              "type": "armor",
             },
             Object {
               "args": "arrival",
@@ -1343,7 +1343,7 @@ Object {
     Object {
       "args": "weapon",
       "op": "filter",
-      "type": "is",
+      "type": "weapon",
     },
     Object {
       "op": "or",
@@ -1351,14 +1351,14 @@ Object {
         Object {
           "args": "sniperrifle",
           "op": "filter",
-          "type": "is",
+          "type": "sniperrifle",
         },
         Object {
           "op": "not",
           "operand": Object {
             "args": "armor",
             "op": "filter",
-            "type": "is",
+            "type": "armor",
           },
         },
       ],
@@ -1473,7 +1473,7 @@ Object {
       "operand": Object {
         "args": "maxpower",
         "op": "filter",
-        "type": "is",
+        "type": "maxpower",
       },
     },
   },
@@ -1530,7 +1530,7 @@ Object {
       "operand": Object {
         "args": "maxpower",
         "op": "filter",
-        "type": "is",
+        "type": "maxpower",
       },
     },
   },
@@ -1561,7 +1561,7 @@ Object {
     "operand": Object {
       "args": "maxpower",
       "op": "filter",
-      "type": "is",
+      "type": "maxpower",
     },
   },
 }
@@ -1586,7 +1586,7 @@ Object {
   "operand": Object {
     "args": "maxpower",
     "op": "filter",
-    "type": "is",
+    "type": "maxpower",
   },
 }
 `;
