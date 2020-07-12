@@ -122,7 +122,7 @@ export function parseQuery(query: string): QueryAST {
 
         return {
           op: 'filter',
-          type: token[1] || token[2],
+          type: token[1],
           args: token[2],
         };
       }
