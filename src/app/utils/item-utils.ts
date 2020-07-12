@@ -1,8 +1,4 @@
-import {
-  DamageType,
-  DestinyEnergyType,
-  DestinyInventoryItemDefinition,
-} from 'bungie-api-ts/destiny2';
+import { DestinyInventoryItemDefinition } from 'bungie-api-ts/destiny2';
 import { DimItem, DimSocket, DimMasterwork } from 'app/inventory/item-types';
 
 import modMetadataBySlotTag from 'data/d2/specialty-modslot-metadata.json';
