@@ -20,7 +20,9 @@ const simpleFilters: FilterDefinition[] = [
     format: 'simple',
     destinyVersion: 0,
     filterFunction: (item: DimItem) =>
-      item.bucket?.sort === 'Weapons' && item.bucket.hash !== 1506418338,
+      item.bucket?.sort === 'Weapons' &&
+      item.bucket.type !== 'SeasonalArtifacts' &&
+      item.bucket.type !== 'Class',
   },
   {
     keywords: 'armor',

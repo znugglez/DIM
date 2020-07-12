@@ -20,6 +20,7 @@ const ForkTsCheckerNotifierWebpackPlugin = require('fork-ts-checker-notifier-web
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const svgToMiniDataURI = require('mini-svg-data-uri');
 const _ = require('lodash');
+const WorkerPlugin = require('worker-plugin');
 
 const Visualizer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -393,6 +394,10 @@ module.exports = (env) => {
         '$featureFlags.armor2ModPicker': JSON.stringify(env.dev),
         // Show a banner for supporting a charitable cause
         '$featureFlags.issueBanner': JSON.stringify(true),
+      }),
+
+      new WorkerPlugin({
+        globalObject: 'self',
       }),
 
       new LodashModuleReplacementPlugin({

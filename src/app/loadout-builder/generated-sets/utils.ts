@@ -1,7 +1,7 @@
 import { LockableBuckets, LockedModBase, LockedArmor2ModMap } from './../types';
 import _ from 'lodash';
 import { DimSocket, DimItem, D2Item } from '../../inventory/item-types';
-import { ArmorSet, LockedItemType, StatTypes, LockedMap, LockedMod, MinMaxIgnored } from '../types';
+import { ArmorSet, LockedItemType, StatTypes, LockedMap, LockedMod } from '../types';
 import { count } from '../../utils/util';
 import {
   DestinyInventoryItemDefinition,
@@ -11,8 +11,8 @@ import {
 } from 'bungie-api-ts/destiny2';
 import { chainComparator, compareBy, Comparator } from 'app/utils/comparators';
 import { statKeys } from '../types';
-import { getSpecialtySocketMetadata } from 'app/utils/item-utils';
-import { canSetTakeMods } from './mod-utils';
+import { getSpecialtySocketMetadata, specialtyModSocketHashes } from 'app/utils/item-utils';
+import { canSetTakeGeneralAndSeasonalMods } from './mod-utils';
 
 /**
  * Plug item hashes that should be excluded from the list of selectable perks.
@@ -174,65 +174,53 @@ function canAllModsBeUsed(set: ArmorSet, seasonalMods: readonly LockedModBase[])
 
 /**
  * Filter sets down based on stat filters, locked perks, etc.
+ * TODO This needs to become a sorter, not a filter. All 'filtering' should be done in process.
  */
 export function filterGeneratedSets(
-  sets: readonly ArmorSet[],
-  minimumPower: number,
   lockedMap: LockedMap,
   lockedArmor2ModMap: LockedArmor2ModMap,
   lockedSeasonalMods: readonly LockedModBase[],
-  stats: Readonly<{ [statType in StatTypes]: MinMaxIgnored }>,
   statOrder: StatTypes[],
-  enabledStats: Set<StatTypes>
+  enabledStats: Set<StatTypes>,
+  sets?: readonly ArmorSet[]
 ) {
+  if (!sets) {
+    return;
+  }
+
   let matchedSets = Array.from(sets);
 
   matchedSets = matchedSets.filter((set) => {
-    if (set.maxPower < minimumPower) {
-      return false;
-    }
-
     if (lockedSeasonalMods.length && !canAllModsBeUsed(set, lockedSeasonalMods)) {
       return false;
     }
 
     // TODO this is too restrictive as there may be other combinations that can take the mods
-    if ($featureFlags.armor2ModPicker && !canSetTakeMods(set.firstValidSet, lockedArmor2ModMap)) {
+    if (
+      $featureFlags.armor2ModPicker &&
+      !canSetTakeGeneralAndSeasonalMods(set.firstValidSet, lockedArmor2ModMap)
+    ) {
       return false;
     }
 
     return true;
   });
 
+  // TODO Can these two sorts be merged?
   matchedSets = matchedSets.sort(
     chainComparator(...getComparatorsForMatchedSetSorting(statOrder, enabledStats))
   );
 
-  matchedSets = getBestSets(matchedSets, lockedMap, stats);
+  matchedSets = sortSetsByMostMatchedPerks(matchedSets, lockedMap);
 
   return matchedSets;
 }
 
 /**
- * Get the best sorted computed sets for a specific tier
+ * Sort sets by set with most number of matched perks
  */
-function getBestSets(
-  setMap: readonly ArmorSet[],
-  lockedMap: LockedMap,
-  stats: Readonly<{ [statType in StatTypes]: MinMaxIgnored }>
-): ArmorSet[] {
-  // Remove sets that do not match tier filters
-  let sortedSets: ArmorSet[];
-  if (Object.values(stats).every((s) => s.min === 0 && s.max === 10)) {
-    sortedSets = Array.from(setMap);
-  } else {
-    sortedSets = setMap.filter((set) =>
-      _.every(stats, (value, key) => {
-        const tier = statTier(set.stats[key]);
-        return value.ignored || (value.min <= tier && value.max >= tier);
-      })
-    );
-  }
+function sortSetsByMostMatchedPerks(setMap: readonly ArmorSet[], lockedMap: LockedMap): ArmorSet[] {
+  let sortedSets: ArmorSet[] = Array.from(setMap);
 
   // Prioritize list based on number of matched perks
   Object.keys(lockedMap).forEach((bucket) => {
@@ -464,22 +452,26 @@ export function canSlotMod(item: DimItem, lockedItem: LockedMod) {
   return (
     item.isDestiny2() &&
     matchesEnergy(item, mod) &&
-    // Matches socket plugsets
-    item.sockets &&
-    item.sockets.sockets.some(
-      (socket) =>
-        (socket.socketDefinition.reusablePlugSetHash &&
-          lockedItem.plugSetHash === socket.socketDefinition.reusablePlugSetHash) ||
-        (socket.socketDefinition.randomizedPlugSetHash &&
-          lockedItem.plugSetHash === socket.socketDefinition.randomizedPlugSetHash)
-    )
+    // is a seasonal mod and item has correct socket
+    ((specialtyModSocketHashes.includes(lockedItem.mod.plug.plugCategoryHash) &&
+      getSpecialtySocketMetadata(item)?.compatiblePlugCategoryHashes.includes(
+        lockedItem.mod.plug.plugCategoryHash
+      )) ||
+      // or matches socket plugsets
+      item.sockets?.sockets.some(
+        (socket) =>
+          (socket.socketDefinition.reusablePlugSetHash &&
+            lockedItem.plugSetHash === socket.socketDefinition.reusablePlugSetHash) ||
+          (socket.socketDefinition.randomizedPlugSetHash &&
+            lockedItem.plugSetHash === socket.socketDefinition.randomizedPlugSetHash)
+      ))
   );
 }
 
 /** Whether this item is eligible for being in loadout builder */
 export function isLoadoutBuilderItem(item: DimItem) {
   // Armor and Ghosts
-  return item.bucket.inArmor || item.bucket.hash === 4023194814;
+  return item.bucket.inArmor;
 }
 
 /**
