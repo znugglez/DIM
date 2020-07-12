@@ -120,23 +120,11 @@ export function parseQuery(query: string): QueryAST {
       case 'filter': {
         tokens.pop();
 
-        const negate = token[1] === 'not';
-        const keyword = token[1] === 'is' || token[1] === 'not' ? token[2] : token[1];
-        const returnFilter = {
+        return {
           op: 'filter',
-          type: keyword,
+          type: token[1] || token[2],
           args: token[2],
-        } as const;
-
-        if (negate) {
-          // `not:` a synonym for `-is:`. We could fix this up in filter execution but I chose to normalize it here.
-          return {
-            op: 'not',
-            operand: returnFilter,
-          };
-        } else {
-          return returnFilter;
-        }
+        };
       }
       case 'not': {
         tokens.pop();
@@ -237,9 +225,9 @@ const parens = /(\(\s*|\s*\))/y;
 const negation = /-\s*/y;
 // `not`, `or`, and `and` keywords. or and not can be preceded by whitespace, and any of them can be followed by whitespace.
 // `not` can't be preceded by whitespace because that whitespace is an implicit `and`.
-const booleanKeywords = /(not|\s+or|\s+and)\s+/y;
+const booleanKeywords = /not(?=(:\S|\s))\s*|(\s+or|\s+and)\s+/y;
 // Filter names like is:, stat:discipline:, etc
-const filterName = /[a-z]+:([a-z]+:)?/y;
+const filterName = /[a-z]*:([a-z]+:)?/y;
 // Arguments to filters are pretty unconstrained
 const filterArgs = /[^\s()]+/y;
 // Words without quotes are basically any non-whitespace that doesn't terminate a group
@@ -318,15 +306,15 @@ export function* lexer(query: string): Generator<Token> {
     } else if (char === '"' || char === "'") {
       // Quoted string
       yield ['filter', 'keyword', consumeString(char)];
-    } else if ((match = extract(negation)) !== undefined) {
-      // minus sign is the same as "not"
-      yield ['not'];
     } else if ((match = extract(booleanKeywords)) !== undefined) {
       // boolean keywords
       yield [match.trim() as NoArgTokenType];
+    } else if ((match = extract(negation)) !== undefined) {
+      // minus sign is the same as "not"
+      yield ['not'];
     } else if ((match = extract(filterName)) !== undefined) {
       // Keyword searches - is:, stat:discipline:, etc
-      const keyword = match.slice(0, match.length - 1);
+      let keyword = match.slice(0, match.length - 1);
       const nextChar = query[i];
 
       let args = '';
@@ -338,7 +326,9 @@ export function* lexer(query: string): Generator<Token> {
       } else {
         throw new Error('missing keyword arguments for ' + match);
       }
-
+      if (keyword === 'is' || keyword === '') {
+        keyword = args;
+      }
       yield ['filter', keyword, args];
     } else if ((match = extract(bareWords)) !== undefined) {
       // bare words that aren't keywords are effectively "keyword" type filters

@@ -129,7 +129,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "hunter",
     "hunter",
   ],
   Array [
@@ -151,7 +151,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "warlock",
     "warlock",
   ],
   Array [
@@ -216,7 +216,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -224,7 +224,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "sniperrifle",
     "sniperrifle",
   ],
   Array [
@@ -241,7 +241,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
@@ -303,7 +303,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -311,7 +311,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "sniperrifle",
     "sniperrifle",
   ],
   Array [
@@ -325,7 +325,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
@@ -373,7 +373,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "exotic",
     "exotic",
   ],
   Array [
@@ -483,7 +483,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "equipped",
     "equipped",
   ],
   Array [
@@ -491,7 +491,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "haspower",
     "haspower",
   ],
   Array [
@@ -499,7 +499,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "incurrentchar",
     "incurrentchar",
   ],
 ]
@@ -557,7 +557,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "exotic",
     "exotic",
   ],
   Array [
@@ -568,7 +568,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "locked",
     "locked",
   ],
   Array [
@@ -579,7 +579,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "maxpower",
     "maxpower",
   ],
   Array [
@@ -590,7 +590,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "tagged",
     "tagged",
   ],
   Array [
@@ -737,7 +737,7 @@ exports[`parse |is:armor2.0|: lexer 1`] = `
 Array [
   Array [
     "filter",
-    "is",
+    "armor2.0",
     "armor2.0",
   ],
 ]
@@ -773,7 +773,7 @@ exports[`parse |is:blue is:haspower -is:maxpower|: lexer 1`] = `
 Array [
   Array [
     "filter",
-    "is",
+    "blue",
     "blue",
   ],
   Array [
@@ -781,7 +781,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "haspower",
     "haspower",
   ],
   Array [
@@ -792,7 +792,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "maxpower",
     "maxpower",
   ],
 ]
@@ -828,7 +828,7 @@ exports[`parse |is:blue is:haspower not:maxpower|: lexer 1`] = `
 Array [
   Array [
     "filter",
-    "is",
+    "blue",
     "blue",
   ],
   Array [
@@ -836,15 +836,18 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "haspower",
     "haspower",
   ],
   Array [
     "implicit_and",
   ],
   Array [
-    "filter",
     "not",
+  ],
+  Array [
+    "filter",
+    "maxpower",
     "maxpower",
   ],
 ]
@@ -890,7 +893,7 @@ exports[`parse |is:blue is:weapon or is:armor not:maxpower|: lexer 1`] = `
 Array [
   Array [
     "filter",
-    "is",
+    "blue",
     "blue",
   ],
   Array [
@@ -898,7 +901,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -906,15 +909,18 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
     "implicit_and",
   ],
   Array [
-    "filter",
     "not",
+  ],
+  Array [
+    "filter",
+    "maxpower",
     "maxpower",
   ],
 ]
@@ -952,7 +958,7 @@ exports[`parse |is:rocketlauncher (perk:"cluster" or perk:"tracking module")|: l
 Array [
   Array [
     "filter",
-    "is",
+    "rocketlauncher",
     "rocketlauncher",
   ],
   Array [
@@ -1013,7 +1019,7 @@ exports[`parse |is:rocketlauncher -"cluster" -"tracking module"|: lexer 1`] = `
 Array [
   Array [
     "filter",
-    "is",
+    "rocketlauncher",
     "rocketlauncher",
   ],
   Array [
@@ -1074,7 +1080,7 @@ exports[`parse |is:rocketlauncher -"cluster" -'tracking module'|: lexer 1`] = `
 Array [
   Array [
     "filter",
-    "is",
+    "rocketlauncher",
     "rocketlauncher",
   ],
   Array [
@@ -1144,7 +1150,7 @@ exports[`parse |is:weapon (is:sniperrifle or (is:armor and modslot:arrival))|: l
 Array [
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -1155,7 +1161,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "sniperrifle",
     "sniperrifle",
   ],
   Array [
@@ -1166,7 +1172,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
@@ -1231,7 +1237,7 @@ exports[`parse |is:weapon and is:sniperrifle or not is:armor and modslot:arrival
 Array [
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -1239,7 +1245,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "sniperrifle",
     "sniperrifle",
   ],
   Array [
@@ -1250,7 +1256,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
@@ -1306,7 +1312,7 @@ exports[`parse |is:weapon is:sniperrifle or is:armor and modslot:arrival|: lexer
 Array [
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -1314,7 +1320,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "sniperrifle",
     "sniperrifle",
   ],
   Array [
@@ -1322,7 +1328,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
@@ -1376,7 +1382,7 @@ exports[`parse |is:weapon is:sniperrifle or not is:armor modslot:arrival|: lexer
 Array [
   Array [
     "filter",
-    "is",
+    "weapon",
     "weapon",
   ],
   Array [
@@ -1384,7 +1390,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "sniperrifle",
     "sniperrifle",
   ],
   Array [
@@ -1395,7 +1401,7 @@ Array [
   ],
   Array [
     "filter",
-    "is",
+    "armor",
     "armor",
   ],
   Array [
@@ -1489,8 +1495,11 @@ Array [
     "not",
   ],
   Array [
-    "filter",
     "not",
+  ],
+  Array [
+    "filter",
+    "maxpower",
     "maxpower",
   ],
 ]
@@ -1546,8 +1555,11 @@ Array [
     "not",
   ],
   Array [
-    "filter",
     "not",
+  ],
+  Array [
+    "filter",
+    "maxpower",
     "maxpower",
   ],
 ]
@@ -1573,8 +1585,11 @@ Array [
     "not",
   ],
   Array [
-    "filter",
     "not",
+  ],
+  Array [
+    "filter",
+    "maxpower",
     "maxpower",
   ],
 ]
@@ -1594,8 +1609,11 @@ Object {
 exports[`parse |not:maxpower|: lexer 1`] = `
 Array [
   Array [
-    "filter",
     "not",
+  ],
+  Array [
+    "filter",
+    "maxpower",
     "maxpower",
   ],
 ]
