@@ -119,10 +119,10 @@ export function parseQuery(query: string): QueryAST {
     switch (token[0]) {
       case 'filter': {
         tokens.pop();
-
+        const keyword = token[1] === 'is' || token[1] === '' ? token[2] : token[1];
         return {
           op: 'filter',
-          type: token[1],
+          type: keyword,
           args: token[2],
         };
       }
@@ -314,7 +314,7 @@ export function* lexer(query: string): Generator<Token> {
       yield ['not'];
     } else if ((match = extract(filterName)) !== undefined) {
       // Keyword searches - is:, stat:discipline:, etc
-      let keyword = match.slice(0, match.length - 1);
+      const keyword = match.slice(0, match.length - 1);
       const nextChar = query[i];
 
       let args = '';
@@ -325,9 +325,6 @@ export function* lexer(query: string): Generator<Token> {
         args = match;
       } else {
         throw new Error('missing keyword arguments for ' + match);
-      }
-      if (keyword === 'is' || keyword === '') {
-        keyword = args;
       }
       yield ['filter', keyword, args];
     } else if ((match = extract(bareWords)) !== undefined) {
