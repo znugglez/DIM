@@ -1238,7 +1238,11 @@ function searchFilters(
         );
       },
       weapon(item: DimItem) {
-        return item.bucket?.sort === 'Weapons' && item.bucket.hash !== 1506418338;
+        return (
+          item.bucket?.sort === 'Weapons' &&
+          item.bucket.type !== 'SeasonalArtifacts' &&
+          item.bucket.type !== 'Class'
+        );
       },
       armor(item: DimItem) {
         return item.bucket?.sort === 'Armor';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { t } from 'app/i18next-t';
 import clsx from 'clsx';
-import { DimItem, DimStat, D2Item } from '../inventory/item-types';
+import { DimItem, DimStat } from '../inventory/item-types';
 import _ from 'lodash';
 import { CompareService } from './compare.service';
 import { chainComparator, reverseComparator, compareBy } from '../utils/comparators';
@@ -15,22 +15,19 @@ import { RootState } from '../store/reducers';
 import Sheet from '../dim-ui/Sheet';
 import { showNotification } from '../notifications/notifications';
 import { scrollToPosition } from 'app/dim-ui/scroll';
-import {
-  DestinyDisplayPropertiesDefinition,
-  DestinyInventoryItemDefinition,
-} from 'bungie-api-ts/destiny2';
+import { DestinyDisplayPropertiesDefinition } from 'bungie-api-ts/destiny2';
 import { makeDupeID } from 'app/search/search-filter';
 import { D2ManifestDefinitions } from '../destiny2/d2-definitions';
-import { getSpecialtySocketMetadata } from 'app/utils/item-utils';
-// import intrinsicLookupTable from 'data/d2/intrinsic-perk-lookup.json';
-// we are falling back to using just an exactly matching intrinsic perk for now
-// archetypes are difficult.
-import { INTRINSIC_PLUG_CATEGORY } from 'app/inventory/store/sockets';
+import {
+  getItemSpecialtyModSlotDisplayName,
+  getSpecialtySocketMetadata,
+} from 'app/utils/item-utils';
 import ElementIcon from 'app/inventory/ElementIcon';
 import { DimStore } from 'app/inventory/store-types';
 import { storesSelector } from 'app/inventory/selectors';
 import { getAllItems } from 'app/inventory/stores-helpers';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { getWeaponArchetype } from 'app/dim-ui/WeaponArchetype';
 interface StoreProps {
   ratings: ReviewsState['ratings'];
   stores: DimStore[];
@@ -363,15 +360,13 @@ class Compare extends React.Component<Props, State> {
     const exampleItem = comparisonItems[0];
     const exampleItemElementIcon = <ElementIcon element={exampleItem.element} />;
     const exampleItemModSlot = getSpecialtySocketMetadata(exampleItem);
-    const specialtyModSlotName = this.props.defs?.InventoryItem.get(
-      exampleItemModSlot?.emptyModSocketHashes[0] ?? -99999999
-    )?.itemTypeDisplayName;
+    const specialtyModSlotName = getItemSpecialtyModSlotDisplayName(exampleItem);
 
     // helper functions for filtering items
     const matchesExample = (key: keyof DimItem) => (item: DimItem) =>
       item[key] === exampleItem[key];
     const matchingModSlot = (item: DimItem) =>
-      exampleItemModSlot?.tag === getSpecialtySocketMetadata(item)?.tag;
+      exampleItemModSlot === getSpecialtySocketMetadata(item);
     const hasEnergy = (item: DimItem) => Boolean(item.isDestiny2() && item.energy);
 
     // minimum filter: make sure it's all armor, and can go in the same slot on the same class
@@ -501,14 +496,8 @@ class Compare extends React.Component<Props, State> {
       return intrinsic?.plug?.plugItem.hash || -99999999;
     };
       */
-    const getIntrinsicPerk = (item: D2Item): DestinyInventoryItemDefinition | undefined => {
-      const intrinsic = item.sockets?.sockets.find((s) =>
-        s.plug?.plugItem.itemCategoryHashes?.includes(INTRINSIC_PLUG_CATEGORY)
-      );
-      return intrinsic?.plug?.plugItem;
-    };
     const exampleItemRpm = getRpm(exampleItem);
-    const intrinsic = exampleItem.isDestiny2() ? getIntrinsicPerk(exampleItem) : undefined;
+    const intrinsic = exampleItem.isDestiny2() ? getWeaponArchetype(exampleItem) : undefined;
     const intrinsicName = intrinsic?.displayProperties.name || t('Compare.Archetype');
     const intrinsicHash = intrinsic?.hash;
 
@@ -544,7 +533,7 @@ class Compare extends React.Component<Props, State> {
         buttonLabel: <>{[intrinsicName, exampleItem.typeName].join(' + ')}</>,
         items: exampleItem.isDestiny2()
           ? allWeapons.filter(
-              (i) => i.isDestiny2() && i.sockets && getIntrinsicPerk(i)?.hash === intrinsicHash
+              (i) => i.isDestiny2() && i.sockets && getWeaponArchetype(i)?.hash === intrinsicHash
             )
           : allWeapons.filter((i) => exampleItemRpm === getRpm(i)),
       },

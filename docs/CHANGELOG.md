@@ -1,8 +1,15 @@
 ## Next
 
+* Added support for negative stats on mods. This should be visible in item displays and make loadout optimizer results more accurate.
+* Fix quick item picker not remembering your preference for "equip" vs "store".
+
+## 6.20.0 <span className="changelog-date">(2020-07-12)</span>
+
 * Fix sorting by Power Limit in the compare pane.
 * When opening a loadout in the loadout optimizer from the inventory page, the correct character is now selected rather than the last played character.
 * Allow masterworks to affect more than one stat
+* Exclude subclasses from `is:weapon` filter.
+* Fixed Loadout Optimizer not including all the right tiers when tier filtering was in place.
 
 ## 6.19.0 <span className="changelog-date">(2020-07-05)</span>
 
