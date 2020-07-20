@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { Armor2ModPlugCategories } from 'app/utils/item-utils';
 import { DimItem } from '../inventory/item-types';
 import { DestinyInventoryItemDefinition } from 'bungie-api-ts/destiny2';
 import { InventoryBucket } from 'app/inventory/inventory-buckets';
+import { Armor2ModPlugCategories } from 'app/utils/socket-utils';
 
 export type StatTypes =
   | 'Mobility'

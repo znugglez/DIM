@@ -6,11 +6,12 @@ import {
   ItemsByBucket,
   LockedItemType,
 } from './types';
-import { Armor2ModPlugCategories, getItemDamageShortName } from 'app/utils/item-utils';
+import { getItemDamageShortName } from 'app/utils/item-utils';
 import { doEnergiesMatch } from './generated-sets/mod-utils';
 import { canSlotMod } from './generated-sets/utils';
 import { DimItem } from 'app/inventory/item-types';
 import { getBaseStatValues } from './utils';
+import { Armor2ModPlugCategories } from 'app/utils/socket-utils';
 
 const bucketsToCategories = {
   [LockableBuckets.helmet]: Armor2ModPlugCategories.helmet,
@@ -91,8 +92,7 @@ export function matchLockedItem(item: DimItem, lockedItem: LockedItemType) {
     case 'perk':
       return (
         item.isDestiny2() &&
-        item.sockets &&
-        item.sockets.sockets.some((slot) =>
+        item.sockets?.sockets.some((slot) =>
           slot.plugOptions.some((plug) => lockedItem.perk.hash === plug.plugItem.hash)
         )
       );

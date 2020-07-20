@@ -2,7 +2,8 @@ import { DimItem } from './../../inventory/item-types';
 import _ from 'lodash';
 import { LockableBuckets, LockedArmor2ModMap, LockedArmor2Mod } from './../types';
 import { DestinyEnergyType } from 'bungie-api-ts/destiny2';
-import { getSpecialtySocketMetadata, Armor2ModPlugCategories } from 'app/utils/item-utils';
+import { getSpecialtySocketMetadata } from 'app/utils/item-utils';
+import { Armor2ModPlugCategories } from 'app/utils/socket-utils';
 
 const energyOrder = [
   DestinyEnergyType.Void,

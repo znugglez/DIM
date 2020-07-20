@@ -1,8 +1,4 @@
-import {
-  DamageType,
-  DestinyEnergyType,
-  DestinyInventoryItemDefinition,
-} from 'bungie-api-ts/destiny2';
+import { DamageType, DestinyEnergyType } from 'bungie-api-ts/destiny2';
 import { DimItem, DimMasterwork } from 'app/inventory/item-types';
 
 import modSocketMetadata from 'data/d2/specialty-modslot-metadata';
@@ -32,16 +28,6 @@ export const getItemDamageShortName = (item: DimItem): string | undefined =>
   item.isDestiny2() && item.energy
     ? energyNamesByEnum[item.element?.enumValue ?? -1]
     : damageNamesByEnum[item.element?.enumValue ?? -1];
-
-export const Armor2ModPlugCategories = {
-  general: 2487827355,
-  helmet: 2912171003,
-  gauntlets: 3422420680,
-  chest: 1526202480,
-  leg: 2111701510,
-  classitem: 912441879,
-} as const;
-const armor2PlugCategoryHashes: number[] = Object.values(Armor2ModPlugCategories);
 
 // these are helpers for identifying SpecialtySockets (seasonal mods).
 // i would like this file to be the only one that interfaces with
@@ -94,11 +80,6 @@ export const getSpecialtySocketMetadataByPlugCategoryHash = (plugCategoryHash: n
  */
 export const getItemSpecialtyModSlotDisplayName = (item: DimItem) =>
   getSpecialtySocket(item)?.plug?.plugItem.itemTypeDisplayName || '';
-
-/** feed a **mod** definition into this */
-export const isArmor2Mod = (item: DestinyInventoryItemDefinition): boolean =>
-  armor2PlugCategoryHashes.includes(item.plug.plugCategoryHash) ||
-  specialtyModPlugCategoryHashes.includes(item.plug.plugCategoryHash);
 
 /** given item, get the final season it will be relevant (able to hit max power level) */
 export const getItemPowerCapFinalSeason = (item: DimItem): number | undefined =>

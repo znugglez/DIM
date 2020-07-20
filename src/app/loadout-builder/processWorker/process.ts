@@ -11,7 +11,6 @@ import {
 } from '../types';
 import { statTier } from '../generated-sets/utils';
 import { compareBy } from '../../utils/comparators';
-import { Armor2ModPlugCategories } from '../../utils/item-utils';
 import { statHashes } from '../types';
 import {
   ProcessItemsByBucket,
@@ -22,6 +21,7 @@ import {
 } from './types';
 import { DestinySocketCategoryStyle } from 'bungie-api-ts/destiny2';
 import { canTakeAllSeasonalMods, sortProcessModMetadataOrProcessItem } from './processUtils';
+import { Armor2ModPlugCategories } from '../../utils/socket-utils';
 
 const RETURNED_ARMOR_SETS = 200;
 

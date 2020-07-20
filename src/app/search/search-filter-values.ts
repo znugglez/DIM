@@ -191,11 +191,11 @@ export const D1ActivityHashes = {
 
 /** if a plug contains these, consider it empty */
 export const emptySocketHashes = [
-  2323986101, // InventoryItem "Empty Mod Socket"
-  2600899007, // InventoryItem "Empty Mod Socket"
-  1835369552, // InventoryItem "Empty Mod Socket"
-  3851138800, // InventoryItem "Empty Mod Socket"
-  791435474, // InventoryItem "Empty Activity Mod Socket"
+  2323986101, // InventoryItem "Empty Mod Socket" (y2+ weapons)
+  2600899007, // InventoryItem "Empty Mod Socket" (y2 armor)
+  1835369552, // InventoryItem "Empty Mod Socket" (weird y2 armor socket on 2 pieces of EP gear)
+  3851138800, // InventoryItem "Empty Mod Socket" (y1 armor)
+  791435474, // InventoryItem "Empty Activity Mod Socket" (season 7 year 2 opulent mod slot)
 ];
 
 /** these stats actually exist on D2 armor */

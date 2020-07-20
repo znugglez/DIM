@@ -49,8 +49,8 @@ export const getArmorSlotSpecificModSocket: (item: DimItem) => DimSocket | false
   (item.isDestiny2() &&
     item.bucket.inArmor &&
     item.sockets?.sockets.find((socket) =>
-      socket?.plug?.plugItem?.plug?.plugCategoryIdentifier.match(
-        armorSlotSpecificPlugCategoryIdentifier
+      armorSlotSpecificPlugCategoryIdentifier.test(
+        socket?.plug?.plugItem?.plug?.plugCategoryIdentifier ?? ''
       )
     )) ??
   false;

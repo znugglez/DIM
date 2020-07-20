@@ -20,7 +20,7 @@ import { escapeRegExp } from 'app/search/search-filter';
 import { D2ManifestDefinitions } from 'app/destiny2/d2-definitions';
 import { plugIsInsertable } from 'app/item-popup/SocketDetails';
 import { settingsSelector } from 'app/settings/reducer';
-import { getSpecialtySocketMetadataByPlugCategoryHash, isArmor2Mod } from 'app/utils/item-utils';
+import { getSpecialtySocketMetadataByPlugCategoryHash } from 'app/utils/item-utils';
 import ModPickerSection from './ModPickerSection';
 import { chainComparator, compareBy } from 'app/utils/comparators';
 import ModPickerHeader from './ModPickerHeader';
@@ -29,6 +29,7 @@ import { itemsForPlugSet } from 'app/collections/plugset-helpers';
 import { t } from 'app/i18next-t';
 import { SearchFilterRef } from 'app/search/SearchFilterInput';
 import { LoadoutBuilderAction } from './loadoutBuilderReducer';
+import { isArmor2Mod } from 'app/utils/socket-utils';
 
 const Armor2ModPlugCategoriesTitles = {
   [ModPickerCategories.general]: t('LB.General'),

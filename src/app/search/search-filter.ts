@@ -52,6 +52,7 @@ import { settingsSelector } from 'app/settings/reducer';
 import store from '../store/store';
 import { getStore } from 'app/inventory/stores-helpers';
 import { DestinyVersion } from '@destinyitemmanager/dim-api-types';
+import { isUsedModSocket, isUsedShaderSocket, isY2ModSocket } from 'app/utils/socket-utils';
 
 /**
  * (to the tune of TMNT) ♪ string processing helper functions ♫
@@ -1305,13 +1306,7 @@ function searchFilters(
         return !item.notransfer;
       },
       hasShader(item: D2Item) {
-        return item.sockets?.sockets.some((socket) =>
-          Boolean(
-            socket.plug?.plugItem.plug &&
-              socket.plug.plugItem.plug.plugCategoryHash === hashes.shaderBucket &&
-              socket.plug.plugItem.hash !== DEFAULT_SHADER
-          )
-        );
+        return item.sockets?.sockets.some(isUsedShaderSocket);
       },
       hasOrnament(item: D2Item) {
         return item.sockets?.sockets.some((socket) =>
@@ -1325,38 +1320,15 @@ function searchFilters(
         );
       },
       hasMod(item: D2Item) {
-        return item.sockets?.sockets.some((socket) =>
-          Boolean(
-            socket.plug &&
-              !hashes.emptySocketHashes.includes(socket.plug.plugItem.hash) &&
-              socket.plug.plugItem.plug &&
-              socket.plug.plugItem.plug.plugCategoryIdentifier.match(
-                /(v400.weapon.mod_(guns|damage|magazine)|enhancements.)/
-              ) &&
-              // enforce that this provides a perk (excludes empty slots)
-              socket.plug.plugItem.perks.length &&
-              // enforce that this doesn't have an energy cost (y3 reusables)
-              !socket.plug.plugItem.plug.energyCost
-          )
+        // this is for old-style CONSUMABLE mods
+        // no weapon mods are consumable anymore so we exclude guns
+        return (
+          item.bucket.inArmor &&
+          item.sockets?.sockets.some((socket) => isY2ModSocket(socket) && isUsedModSocket(socket))
         );
       },
       modded(item: D2Item) {
-        return (
-          Boolean(item.energy) &&
-          item.sockets &&
-          item.sockets.sockets.some((socket) =>
-            Boolean(
-              socket.plug &&
-                !hashes.emptySocketHashes.includes(socket.plug.plugItem.hash) &&
-                socket.plug.plugItem.plug &&
-                socket.plug.plugItem.plug.plugCategoryIdentifier.match(
-                  /(v400.weapon.mod_(guns|damage|magazine)|enhancements.)/
-                ) &&
-                // enforce that this provides a perk (excludes empty slots)
-                socket.plug.plugItem.perks.length
-            )
-          )
-        );
+        return item.energy && item.sockets?.sockets.some(isUsedModSocket);
       },
       trashlist(item: D2Item) {
         return Boolean(inventoryWishListRolls[item.id]?.isUndesirable);
