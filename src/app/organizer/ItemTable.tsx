@@ -351,6 +351,13 @@ function ItemTable({
     .map((c) => c.gridWidth ?? 'min-content')
     .join(' ')}`;
 
+  const numColumns = filteredColumns.length + 1;
+
+  const rowStyle =
+    [...Array(numColumns).keys()]
+      .map((n) => `[role="cell"]:nth-of-type(${numColumns * 2}n+${n + 2})`)
+      .join() + `{background-color:#aaa1;}`;
+
   /**
    * Toggle sorting of columns. If shift is held, adds this column to the sort.
    */
@@ -516,6 +523,7 @@ function ItemTable({
             forClass={classIfAny}
           />
         </div>
+        <style>{rowStyle}</style>
       </div>
       <div className={clsx(styles.selection, styles.header)} role="columnheader" aria-sort="none">
         <input
