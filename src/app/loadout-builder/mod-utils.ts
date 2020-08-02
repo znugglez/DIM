@@ -1,4 +1,4 @@
-import { DimItem, D2Item } from '../inventory/item-types';
+import { DimItem, D2Item } from 'app/inventory/item-types';
 import _ from 'lodash';
 import { LockedArmor2ModMap, LockedArmor2Mod, ModPickerCategories } from './types';
 import { DestinyEnergyType } from 'bungie-api-ts/destiny2';
@@ -6,10 +6,10 @@ import {
   sortProcessModsOrProcessItems,
   canTakeAllSeasonalMods,
   canTakeAllGeneralMods,
-} from './processWorker/processUtils';
-import { mapArmor2ModToProcessMod, mapDimItemToProcessItem } from './processWorker/mappers';
+} from './process/processUtils';
+import { mapArmor2ModToProcessMod, mapDimItemToProcessItem } from './process/mappers';
 import { armor2PlugCategoryHashesByName } from 'app/search/d2-known-values';
-import { ProcessItem } from './processWorker/types';
+import { ProcessItem } from './process/types';
 
 /**
  * Checks that:

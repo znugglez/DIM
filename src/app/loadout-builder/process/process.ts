@@ -8,7 +8,7 @@ import {
   MinMax,
 } from '../types';
 import { statTier } from '../utils';
-import { compareBy } from '../../utils/comparators';
+import { compareBy } from 'app/utils/comparators';
 import { statHashes } from '../types';
 import {
   ProcessItemsByBucket,
@@ -24,7 +24,7 @@ import {
   sortProcessModsOrProcessItems,
   canTakeAllGeneralMods,
 } from './processUtils';
-import { armor2PlugCategoryHashesByName } from '../../search/d2-known-values';
+import { armor2PlugCategoryHashesByName } from 'app/search/d2-known-values';
 
 const RETURNED_ARMOR_SETS = 200;
 

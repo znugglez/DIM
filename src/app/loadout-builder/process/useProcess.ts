@@ -14,14 +14,14 @@ import {
   bucketsToCategories,
 } from '../types';
 import { D2Item } from 'app/inventory/item-types';
-import { ProcessItemsByBucket } from '../processWorker/types';
+import { ProcessItemsByBucket } from './types';
 import {
   mapDimItemToProcessItem,
   mapSeasonalModsToProcessMods,
   getTotalModStatChanges,
   hydrateArmorSet,
   mapArmor2ModToProcessMod,
-} from '../processWorker/mappers';
+} from './mappers';
 
 interface ProcessState {
   processing: boolean;
@@ -173,12 +173,12 @@ function useWorkerAndCleanup(
 }
 
 function createWorker() {
-  const instance = new Worker('../processWorker/ProcessWorker', {
+  const instance = new Worker('./processWorker/ProcessWorker', {
     name: 'ProcessWorker',
     type: 'module',
   });
 
-  const worker = wrap<import('../processWorker/ProcessWorker').ProcessWorker>(instance);
+  const worker = wrap<import('./processWorker/ProcessWorker').ProcessWorker>(instance);
 
   const cleanup = () => {
     worker[releaseProxy]();

@@ -1,11 +1,11 @@
 import _ from 'lodash';
-import { DimSocket, DimSockets, D2Item, DimItem } from '../../inventory/item-types';
+import { DimSocket, DimSockets, D2Item, DimItem } from 'app/inventory/item-types';
 import { ProcessSocket, ProcessMod, ProcessSockets, ProcessItem, ProcessArmorSet } from './types';
 import { LockedModBase, ArmorSet, statHashToType, StatTypes, LockedArmor2Mod } from '../types';
 import {
   getSpecialtySocketMetadataByPlugCategoryHash,
   getSpecialtySocketMetadata,
-} from '../../utils/item-utils';
+} from 'app/utils/item-utils';
 import { DestinyItemInvestmentStatDefinition } from 'bungie-api-ts/destiny2';
 
 function mapDimSocketToProcessSocket(dimSocket: DimSocket): ProcessSocket {

@@ -1,5 +1,5 @@
 import { expose } from 'comlink';
-import { process } from './process';
+import { process } from '../process';
 
 const exports = {
   process,
