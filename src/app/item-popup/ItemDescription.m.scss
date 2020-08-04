@@ -40,3 +40,10 @@
     vertical-align: text-bottom;
   }
 }
+
+.addHashTag {
+  float: right;
+  select {
+    width: 0;
+  }
+}

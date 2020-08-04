@@ -1,55 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DimItem } from 'app/inventory/item-types';
-import NotesForm from './NotesForm';
+import NotesArea from './NotesArea';
 import ExternalLink from 'app/dim-ui/ExternalLink';
 import { t } from 'app/i18next-t';
 import ishtarLogo from '../../images/ishtar-collective.svg';
 import styles from './ItemDescription.m.scss';
-import { AppIcon, editIcon } from 'app/shell/icons';
 import { connect } from 'react-redux';
-import { getNotes } from 'app/inventory/dim-item-info';
 import { RootState, ThunkDispatchProp } from 'app/store/reducers';
 import { inventoryWishListsSelector } from 'app/wishlists/reducer';
 import { InventoryWishListRoll } from 'app/wishlists/wishlists';
-import { setItemNote, setItemHashNote } from 'app/inventory/actions';
-import { itemInfosSelector, itemHashTagsSelector } from 'app/inventory/selectors';
-import { itemIsInstanced } from 'app/utils/item-utils';
 
 interface ProvidedProps {
   item: DimItem;
 }
 
 interface StoreProps {
-  notes?: string;
   inventoryWishListRoll?: InventoryWishListRoll;
 }
 
 function mapStateToProps(state: RootState, props: ProvidedProps): StoreProps {
   return {
-    notes: getNotes(props.item, itemInfosSelector(state), itemHashTagsSelector(state)),
     inventoryWishListRoll: inventoryWishListsSelector(state)[props.item.id],
   };
 }
 
 type Props = ProvidedProps & StoreProps & ThunkDispatchProp;
 
-function ItemDescription({ item, notes, inventoryWishListRoll, dispatch }: Props) {
+function ItemDescription({ item, inventoryWishListRoll }: Props) {
   const showDescription = Boolean(item.description?.length);
 
   const loreLink = item.loreHash
     ? `http://www.ishtar-collective.net/entries/${item.loreHash}`
     : undefined;
 
-  const [notesOpen, setNotesOpen] = useState(false);
-
-  const saveNotes = (note: string) =>
-    dispatch(
-      itemIsInstanced(item)
-        ? setItemNote({ itemId: item.id, note })
-        : setItemHashNote({ itemHash: item.hash, note })
-    );
-
-  // TODO: close notes button
   return (
     <>
       {showDescription && <div className={styles.officialDescription}>{item.description}</div>}
@@ -61,38 +44,10 @@ function ItemDescription({ item, notes, inventoryWishListRoll, dispatch }: Props
           {t('WishListRoll.WishListNotes', { notes: inventoryWishListRoll.notes })}
         </div>
       )}
-      {notesOpen ? (
-        <NotesForm item={item} notes={notes} onSaveNotes={saveNotes} />
-      ) : (
-        notes && (
-          <div
-            className={[styles.addNote, styles.description].join(' ')}
-            role="button"
-            onClick={() => {
-              setNotesOpen(true);
-              ga('send', 'event', 'Item Popup', 'Edit Notes');
-            }}
-            tabIndex={0}
-          >
-            <AppIcon icon={editIcon} />{' '}
-            <span className={styles.addNoteTag}>{t('MovePopup.Notes')}</span> {notes}
-          </div>
-        )
-      )}
 
-      {!notesOpen && (loreLink || (item.taggable && !notes)) && (
+      <NotesArea item={item} />
+      {loreLink && (
         <div className={styles.descriptionTools}>
-          {item.taggable && !notes && (
-            <div
-              role="button"
-              className={styles.addNote}
-              onClick={() => setNotesOpen(true)}
-              tabIndex={0}
-            >
-              <AppIcon icon={editIcon} />{' '}
-              <span className={styles.addNoteTag}>{t('MovePopup.AddNote')}</span>
-            </div>
-          )}
           {loreLink && (
             <div className={styles.lore}>
               <ExternalLink href={loreLink}>

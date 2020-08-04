@@ -140,7 +140,7 @@ export default React.forwardRef(function SearchFilterInput(
       [
         {
           words: searchConfig.keywords,
-          match: /\b([\w:"']{3,})$/i,
+          match: /(\b[\w:"']{3,}|#\w*)$/i,
           search(term: string, callback: (terms: string[]) => void) {
             if (term) {
               let words: string[] = term.includes(':') // with a colon, only match from beginning

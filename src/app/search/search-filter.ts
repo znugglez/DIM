@@ -125,7 +125,11 @@ export const makeDupeID = (item: DimItem) =>
 // Selectors
 //
 
-export const searchConfigSelector = createSelector(destinyVersionSelector, buildSearchConfig);
+export const searchConfigSelector = createSelector(
+  destinyVersionSelector,
+  itemInfosSelector,
+  buildSearchConfig
+);
 
 /** A selector for the search config for a particular destiny version. */
 export const searchFiltersConfigSelector = createSelector(
@@ -160,13 +164,27 @@ export interface SearchConfig {
 }
 
 /** Builds an object that describes the available search keywords and category mappings. */
-export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig {
+export function buildSearchConfig(
+  destinyVersion: DestinyVersion,
+  itemInfos: ItemInfos
+): SearchConfig {
   const isD1 = destinyVersion === 1;
   const isD2 = destinyVersion === 2;
   const categories = isD1 ? D1Categories : D2Categories;
   const itemTypes = Object.values(categories).flatMap((l: string[]) =>
     l.map((v) => v.toLowerCase())
   );
+
+  // collect hash tags from item notes
+  const hashTags = new Set<string>();
+  for (const info of Object.values(itemInfos)) {
+    const matches = info.notes?.matchAll(/#\w+/g);
+    if (matches) {
+      for (const match of matches) {
+        hashTags.add(match[0]);
+      }
+    }
+  }
 
   // Add new ItemCategoryHash hashes to this, to add new category searches
   const categoryHashFilters: { [key: string]: number } = {
@@ -344,6 +362,7 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
     ...Object.values(singleTermFilters)
       .flat()
       .flatMap((word) => [`is:${word}`, `not:${word}`]),
+    // tag keyword with each tag value
     ...itemTagSelectorList.map((tag) => (tag.type ? `tag:${tag.type}` : 'tag:none')),
     // a keyword for every combination of an item stat name and mathmatical operator
     ...stats.flatMap((stat) => operators.map((comparison) => `stat:${stat}:${comparison}`)),
@@ -394,6 +413,7 @@ export function buildSearchConfig(destinyVersion: DestinyVersion): SearchConfig 
       : []),
     // all the free text searches that support quotes
     ...['notes:', 'perk:', 'perkname:', 'name:', 'description:'],
+    ...hashTags,
   ];
 
   // create suggestion stubs for filter names

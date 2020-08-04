@@ -1,0 +1,10 @@
+.pve {
+  background-color: blue;
+}
+.pvp {
+  background-color: darkred;
+}
+
+.pve.pvp {
+  background-color: purple;
+}
